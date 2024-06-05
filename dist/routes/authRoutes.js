@@ -22,6 +22,7 @@ router.post("/verify-otp", async (req, res) => {
             headers: {
                 Authorization: `Bearer ${req.headers.authorization}`,
             },
+            withCredentials: true
         });
         res.status(200).json(response.data);
     }
