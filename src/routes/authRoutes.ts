@@ -1,6 +1,6 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, response } from "express";
 import axios from "axios";
-import passport from 'passport'
+
 
 const router = express.Router();
 
@@ -41,9 +41,16 @@ router.post("/login", async (req: Request, res: Response) => {
       "http://localhost:3001/auth/login",
       req.body
     );
+    if (response.data && response.data.error) {
+      throw new Error(response.data.error);
+    }
     res.status(200).json(response.data);
-  } catch (error) {
-    console.log("error in login", error);
+  } catch (error:any) {
+    if(error.response){
+      res.status(400).json({error:error.response.data.error})
+    }else{
+      res.status(500).json({error:'unexpected error occured'})
+    }
   }
 });
 
@@ -67,5 +74,17 @@ router.post('/forgot-password',async (req:Request,res:Response)=>{
   }
 })
 
+router.post('/reset-password',async (req:Request,res:Response)=>{
+  try {
+    console.log('reset password reached in server',req.body)
+    const response = await axios.post('http://localhost:3001/auth/reset-password',req.body,{
+      withCredentials:true
+    })
+    console.log('responsedata',response.data)
+    res.status(200).json(response.data)
+  } catch (error) {
+    res.status(500).json({message:'An Error occured during forgot password'})
+  }
+})
 
 export default router;
