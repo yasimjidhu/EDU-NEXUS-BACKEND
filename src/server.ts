@@ -1,29 +1,32 @@
-import express from "express";
-import bodyParser from "body-parser";
-import authRoutes from "./routes/authRoutes";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import axios from "axios";
+import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import cors from 'cors'
 
 const app = express();
+
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: 'http://localhost:5173',
   credentials: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
+
 app.use(cors(corsOptions));
-app.use(cookieParser());
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-axios.defaults.withCredentials = true;
+const authServiceProxy = createProxyMiddleware({
+  target: 'http://localhost:3001', 
+  changeOrigin: true,
+});
 
-// app.use((req, res, next) => {
-//   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-//   next();
-// });
+const userServiceProxy = createProxyMiddleware({
+  target:'http://localhost:3002',
+  changeOrigin: true,
+})
 
-app.use("/auth", authRoutes);
+
+app.use('/auth', authServiceProxy);
+app.use('/user',userServiceProxy)
+
 
 app.listen(4000, () => {
-  console.log("Api gateway running on port 4000");
+  console.log('API Gateway running on port 4000');
 });
