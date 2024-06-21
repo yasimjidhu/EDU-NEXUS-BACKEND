@@ -22,9 +22,14 @@ const userServiceProxy = createProxyMiddleware({
   changeOrigin: true,
 })
 
+const courseServiceProxy = createProxyMiddleware({
+  target:'http://localhost:3004',
+  changeOrigin:true
+})
 
 app.use('/auth', authServiceProxy);
 app.use('/user',userServiceProxy)
+app.use('/course',courseServiceProxy)
 
 
 app.listen(4000, () => {
