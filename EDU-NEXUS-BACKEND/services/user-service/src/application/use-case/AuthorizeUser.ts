@@ -1,6 +1,5 @@
 import { UserEntity } from "../../domain/entities/user";
 import { UserRepository } from "../../infrastructure/repositories/user";
-import { sendInstructorApprovedMessage } from "../../infrastructure/kafka/kafkaProducer";
 
 export class AuthorizeUserUseCase{
     constructor(private userRepository:UserRepository){}
@@ -12,7 +11,14 @@ export class AuthorizeUserUseCase{
             throw new Error('User not found or could not be approved')
         }
         
-        await sendInstructorApprovedMessage(approvedUser)
         return approvedUser
+    }
+    async rejectInstructor(email:string):Promise<UserEntity>{
+        const rejectedUser = await this.userRepository.reject(email)
+
+        if(!rejectedUser){
+            throw new Error('User not found or could not be rejected')
+        }
+        return rejectedUser
     }
 }
