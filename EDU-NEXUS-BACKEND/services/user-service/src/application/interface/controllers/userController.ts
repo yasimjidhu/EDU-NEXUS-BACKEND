@@ -4,6 +4,7 @@ import { AuthorizeUserUseCase } from "../../use-case/AuthorizeUser";
 import { ProfileUseCase } from "../../use-case/ProfileUseCase";
 import { AuthService } from "../../../adapters/services/verfiyAccessToken";
 import { sendApprovalMessage } from "../../../infrastructure/kafka/kafkaProducer";
+
 export class UserController {
   constructor(
     private registerUserUseCase: RegisterUserUseCase,

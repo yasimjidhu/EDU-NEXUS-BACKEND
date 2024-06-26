@@ -33,4 +33,5 @@ router.get('/getUser',userController.getUserHandler.bind(userController))
 router.get('/getAllUsers',userController.getAllUsers.bind(userController))
 router.get('/getInstructors',userController.getAllInstructors.bind(userController))
 
+
 export default router;
