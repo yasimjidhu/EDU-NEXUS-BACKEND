@@ -1,37 +1,20 @@
-import express from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import express from 'express'
+import bodyParser from 'body-parser'
+import authRoutes from './routes/authRoutes'
 import cors from 'cors'
 
-const app = express();
+const app = express()
+app.use(express.json())
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(cors())
 
-const corsOptions = {
-  origin: 'http://localhost:5173',
-  credentials: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-};
-
-app.use(cors(corsOptions));
-
-const authServiceProxy = createProxyMiddleware({
-  target: 'http://localhost:3001', 
-  changeOrigin: true,
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  next();
 });
 
-const userServiceProxy = createProxyMiddleware({
-  target:'http://localhost:3002',
-  changeOrigin: true,
+app.use('/auth',authRoutes)
+
+app.listen(4000,()=>{
+  console.log('Api gateway running on port 4000')
 })
-
-const courseServiceProxy = createProxyMiddleware({
-  target:'http://localhost:3004',
-  changeOrigin:true
-})
-
-app.use('/auth', authServiceProxy);
-app.use('/user',userServiceProxy)
-app.use('/course',courseServiceProxy)
-
-
-app.listen(4000, () => {
-  console.log('API Gateway running on port 4000');
-});

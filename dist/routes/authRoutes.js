@@ -22,7 +22,6 @@ router.post("/verify-otp", async (req, res) => {
             headers: {
                 Authorization: `Bearer ${req.headers.authorization}`,
             },
-            withCredentials: true
         });
         res.status(200).json(response.data);
     }
@@ -57,5 +56,4 @@ router.post('/forgot-password', async (req, res) => {
         res.status(500).json({ message: 'An Error occured during forgot password' });
     }
 });
-
 exports.default = router;
