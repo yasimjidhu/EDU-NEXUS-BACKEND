@@ -13,6 +13,11 @@ const categorySchema = new mongoose.Schema({
     image:{
         type:String,
         required:true
+    },
+    isBlocked:{
+        type:Boolean,
+        required:false,
+        default:false
     }
 })
 

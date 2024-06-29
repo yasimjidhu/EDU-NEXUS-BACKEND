@@ -3,6 +3,7 @@ export class CategoryEntity{
         public id:string,
         public name:string,
         public description:string,
-        public image:string
+        public image:string,
+        public isBlocked?:boolean
     ){}
 }

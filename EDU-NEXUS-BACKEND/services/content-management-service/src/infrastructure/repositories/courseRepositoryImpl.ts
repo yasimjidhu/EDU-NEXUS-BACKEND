@@ -25,14 +25,12 @@ class CourseRepositoryImpl implements CourseRepository {
       });
 
       const createdCourse = await newCourse.save();
-
-      console.log("course created in repository", createdCourse);
       return createdCourse.toObject() as CourseEntity;
     } catch (error: any) {
       throw new Error(`Failed to add course: ${error.message}`);
     }
   }
-  async  getAllCourses(id: string): Promise<CourseEntity[]> {
+  async  getAllCoursesOfInstructor(id: string): Promise<CourseEntity[]> {
     try {
       const allCourses = await Course.find({ instructorRef: id }).exec();
       return allCourses;
@@ -54,8 +52,15 @@ class CourseRepositoryImpl implements CourseRepository {
       throw error;
     }
   }
-  
-  
+  async  getAllCourses(): Promise<CourseEntity[]> {
+    try {
+      const allCourses = await Course.find().exec();
+      return allCourses;
+    } catch (error: any) {
+      console.error("Error retrieving all courses:", error);
+      return []; 
+    }
+  }
 }
 
 export default CourseRepositoryImpl;
