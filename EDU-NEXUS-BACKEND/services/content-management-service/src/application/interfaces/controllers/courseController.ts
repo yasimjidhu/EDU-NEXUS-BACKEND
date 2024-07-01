@@ -20,7 +20,8 @@ export class CourseController {
   }
   async getAllCoursesOfInstructor(req: Request, res: Response): Promise<void> {
     try {
-      const instructorId = req.query.instructorRef as string;
+
+      const instructorId = req.params.instructorId as string
       const allCourses = await this.courseUseCase.getAllCoursesOfInstructor(
         instructorId
       );
@@ -40,7 +41,9 @@ export class CourseController {
   }
   async getCourse(req: Request, res: Response): Promise<void> {
     try {
-      const courseId = req.query.courseId as string;
+      console.log('req.params',req.params)
+      const courseId = req.params.id as string;
+      console.log('course id got',courseId)
 
       const course = await this.courseUseCase.getCourse(courseId);
       if (!course) {
@@ -53,7 +56,7 @@ export class CourseController {
         .status(200)
         .json({ message: "course retrieved successfully", course: course });
     } catch (error: any) {
-      console.log("error occured in add course", error);
+      console.log("error occured in  course retrieval", error);
       res.status(500).json({ message: error.message });
     }
   }
@@ -69,4 +72,24 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async getUnpublishedCourses(req: Request, res: Response): Promise<void> {
+    try {
+
+      const allUnpublishedCourses = await this.courseUseCase.getUnpublishedCourses();
+      if (!allUnpublishedCourses) {
+        res
+          .status(500)
+          .json({ message: "Error occurred while fetching  course" });
+        return;
+      }
+      res
+        .status(200)
+        .json({ message: "course retrieved successfully", courses: allUnpublishedCourses });
+    } catch (error: any) {
+      console.log("error occured in  course retrieval", error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+
 }

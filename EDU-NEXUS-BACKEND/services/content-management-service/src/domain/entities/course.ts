@@ -6,8 +6,7 @@ interface Lesson {
     description: string;
     video: string;
     duration?: string;
-    attachmentsTitle: string;
-    attachments: string[];
+    attachments:Attachments[]
 }
 
 

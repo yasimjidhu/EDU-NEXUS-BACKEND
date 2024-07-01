@@ -5,4 +5,6 @@ export interface CourseRepository {
     getAllCoursesOfInstructor(id: string): Promise<CourseEntity[]>;
     getCourse(courseId: string): Promise<CourseEntity>;
     getAllCourses():Promise<CourseEntity[] >
+    getUnpublishedCourses():Promise<CourseEntity[] >
+
 }

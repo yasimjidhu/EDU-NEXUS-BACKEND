@@ -39,4 +39,12 @@ export class CourseUseCase  {
             throw new Error(`Failed to retrieve courses: ${error.message}`);
         }
     }
+    async getUnpublishedCourses(): Promise<CourseEntity[]> {
+        try {
+            const unpublishedCourses = await this.courseRepository.getUnpublishedCourses();
+            return unpublishedCourses;
+        } catch (error:any) {
+            throw new Error(`Failed to retrieve unpublished courses: ${error.message}`);
+        }
+    }
 }

@@ -26,9 +26,10 @@ router.put('/update-category',categoryController.updateCategory.bind(categoryCon
 router.post('/block-category/:categoryId',categoryController.blockCategory.bind(categoryController))
 router.get('/get-all-categories',categoryController.getAllCategories.bind(categoryController))
 router.post('/add-course',courseController.addCourse.bind(courseController))
-router.get('/get-courses',courseController.getAllCoursesOfInstructor.bind(courseController))
-router.get('/get-course',courseController.getCourse.bind(courseController))
+router.get('/get-courses/:instructorId',courseController.getAllCoursesOfInstructor.bind(courseController))
+router.get('/get-course/:id',courseController.getCourse.bind(courseController))
 router.get('/get-all-courses',courseController.getAllCourses.bind(courseController))
+router.get('/courseRequsts',courseController.getUnpublishedCourses.bind(courseController))
 
 
 export default router

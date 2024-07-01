@@ -12,6 +12,7 @@ class CourseRepositoryImpl implements CourseRepository {
 
   async addCourse(course: CourseEntity): Promise<CourseEntity> {
     try {
+      console.log('course in repository',course)
       const newCourse = new Course({
         title: course.title,
         description: course.description,
@@ -21,10 +22,12 @@ class CourseRepositoryImpl implements CourseRepository {
         certificationAvailable: course.certificationAvailable,
         lessons: course.lessons[course.lessons.length - 1],
         trial: { video: course.trial },
-        pricing: course.pricing,
+        pricing: { type: course.pricing.type, amount: course.pricing.amount },
+        level:course.level
       });
 
       const createdCourse = await newCourse.save();
+      console.log('created course',createdCourse)
       return createdCourse.toObject() as CourseEntity;
     } catch (error: any) {
       throw new Error(`Failed to add course: ${error.message}`);
@@ -58,6 +61,16 @@ class CourseRepositoryImpl implements CourseRepository {
       return allCourses;
     } catch (error: any) {
       console.error("Error retrieving all courses:", error);
+      return []; 
+    }
+  }
+  async  getUnpublishedCourses(): Promise<CourseEntity[]> {
+    try {
+      const allUnpublishedCourses = await Course.find({isPublished:false}).exec();
+      console.log('this isthe unpublished courses',allUnpublishedCourses)
+      return allUnpublishedCourses;
+    } catch (error: any) {
+      console.error("Error retrieving unpublished courses:", error);
       return []; 
     }
   }

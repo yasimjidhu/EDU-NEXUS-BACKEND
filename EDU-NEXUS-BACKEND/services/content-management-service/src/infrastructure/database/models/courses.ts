@@ -76,10 +76,10 @@ const courseSchema = new Schema({
             default: 0
         }
     },
-    // level: {
-    //     type: String,
-    //     enum: ["beginner","intermediate", "expert"]
-    // },
+    level: {
+        type: String,
+        enum: ["beginner","intermediate", "expert"]
+    },
     isRequested: {
         type: Boolean,
         default: true
