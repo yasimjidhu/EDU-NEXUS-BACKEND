@@ -103,4 +103,16 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async postReview(req: Request, res: Response): Promise<void> {
+    try {
+      const response = await this.courseUseCase.getAllCourses();
+      res
+        .status(200)
+        .json({ message: "review added successfully",review:response });
+    } catch (error: any) {
+      console.log("error occured in posting review", error);
+      res.status(500).json({ message: error.message });
+    }
+  }
 }

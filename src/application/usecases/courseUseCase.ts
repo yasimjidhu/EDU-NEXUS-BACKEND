@@ -55,4 +55,5 @@ export class CourseUseCase  {
             throw new Error(`Failed to retrieve unpublished courses: ${error.message}`);
         }
     }
+    
 }

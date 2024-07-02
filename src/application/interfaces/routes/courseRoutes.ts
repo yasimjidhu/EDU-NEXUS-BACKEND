@@ -8,6 +8,9 @@ import CourseRepositoryImpl from "../../../infrastructure/repositories/courseRep
 import { enrollmentRepositoryImpl } from "../../../infrastructure/repositories/enrollmentRepositoryImpl"
 import { EnrollmentUseCase } from "../../usecases/enrollmentUseCase"
 import { EnrollmentController } from "../controllers/EnrollmentController"
+import { reviewRepositoryImpl } from "../../../infrastructure/repositories/reviewRepositoryimpl"
+import { ReviewUseCase } from "../../usecases/reviewUseCase"
+import { ReviewController } from "../controllers/reviewController"
 
 const router = Router() 
 
@@ -15,16 +18,19 @@ const router = Router()
 const cateogyRepository = new categoryRepositoryImpl()
 const courseRepository = new CourseRepositoryImpl()
 const enrollmentRepository = new enrollmentRepositoryImpl()
+const reviewRepository = new reviewRepositoryImpl()
 
 // usecases
 const cateogyUsecase = new CategoryUseCase(cateogyRepository)
 const courseUseCase = new CourseUseCase(courseRepository)
 const enrollmentUseCase = new EnrollmentUseCase(enrollmentRepository)
+const reviewUseCase = new ReviewUseCase(reviewRepository)
 
 //controller
 const categoryController = new CategoryController(cateogyUsecase)
 const courseController = new CourseController(courseUseCase)
 const enrollmentController = new EnrollmentController(enrollmentUseCase)
+const reviewController = new ReviewController(reviewUseCase)
 
 //routes
 router.post('/add-category',categoryController.handleAddCategory.bind(categoryController))
@@ -36,6 +42,7 @@ router.put('/update-course',courseController.updateCourse.bind(courseController)
 router.get('/get-courses/:instructorId',courseController.getAllCoursesOfInstructor.bind(courseController))
 router.get('/get-course/:id',courseController.getCourse.bind(courseController))
 router.get('/get-all-courses',courseController.getAllCourses.bind(courseController))
+router.post('/review',reviewController.addReview.bind(reviewController))
 router.get('/courseRequsts',courseController.getUnpublishedCourses.bind(courseController))
 router.post('/enrollment',enrollmentController.enrollment.bind(enrollmentController))
 router.get('/enrollment/check',enrollmentController.checkEnrollment.bind(enrollmentController))

@@ -3,7 +3,7 @@ export interface ReviewEntity {
     userId: string;
     courseId: string;
     rating?: number;
-    comment?: string;
+    content?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
