@@ -12,7 +12,6 @@ class CourseRepositoryImpl implements CourseRepository {
 
   async addCourse(course: CourseEntity): Promise<CourseEntity> {
     try {
-      console.log('course in repository',course)
       const newCourse = new Course({
         title: course.title,
         description: course.description,
@@ -20,7 +19,7 @@ class CourseRepositoryImpl implements CourseRepository {
         instructorRef: course.instructorRef,
         categoryRef: course.categoryRef,
         certificationAvailable: course.certificationAvailable,
-        lessons: course.lessons[course.lessons.length - 1],
+        lessons: course.lessons,
         trial: { video: course.trial },
         pricing: { type: course.pricing.type, amount: course.pricing.amount },
         level:course.level
@@ -33,6 +32,38 @@ class CourseRepositoryImpl implements CourseRepository {
       throw new Error(`Failed to add course: ${error.message}`);
     }
   }
+  async updateCourse(course: CourseEntity): Promise<CourseEntity> {
+    try {
+
+        // Find the course by ID and update its properties
+        const updatedCourse = await Course.findByIdAndUpdate(
+            course.courseId,
+            {
+                title: course.title,
+                description: course.description,
+                thumbnail: course.thumbnail,
+                instructorRef: course.instructorRef,
+                categoryRef: course.categoryRef,
+                certificationAvailable: course.certificationAvailable,
+                lessons: course.lessons,
+                trial: { video: course.trial },
+                pricing: { type: course.pricing.type, amount: course.pricing.amount },
+                level: course.level,
+            },
+            { new: true } // This option returns the updated document
+        );
+
+        if (!updatedCourse) {
+            throw new Error('Course not found');
+        }
+
+  
+        return updatedCourse.toObject() as CourseEntity;
+    } catch (error: any) {
+        console.error(`Error updating course: ${error.message}`, error);
+        throw new Error(`Failed to update course: ${error.message}`);
+    }
+}
   async  getAllCoursesOfInstructor(id: string): Promise<CourseEntity[]> {
     try {
       const allCourses = await Course.find({ instructorRef: id }).exec();
@@ -67,7 +98,6 @@ class CourseRepositoryImpl implements CourseRepository {
   async  getUnpublishedCourses(): Promise<CourseEntity[]> {
     try {
       const allUnpublishedCourses = await Course.find({isPublished:false}).exec();
-      console.log('this isthe unpublished courses',allUnpublishedCourses)
       return allUnpublishedCourses;
     } catch (error: any) {
       console.error("Error retrieving unpublished courses:", error);

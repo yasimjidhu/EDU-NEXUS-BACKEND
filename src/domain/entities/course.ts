@@ -26,6 +26,7 @@ interface Trial {
 }
 
 interface CourseEntity extends Document {
+    courseId?:string;
     title: string;
     description: string;
     thumbnail: string;

@@ -18,6 +18,20 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
+  async updateCourse(req: Request, res: Response): Promise<void> {
+
+    try {
+      const course = await this.courseUseCase.updateCourse(req.body);
+      if (!course) {
+        res.status(500).json({ message: "Error occurred while updating the  course" });
+        return;
+      }
+      res.status(200).json({ message: "course updated successfully", course });
+    } catch (error: any) {
+      console.log("error occured in update course", error);
+      res.status(500).json({ message: error.message });
+    }
+  }
   async getAllCoursesOfInstructor(req: Request, res: Response): Promise<void> {
     try {
 
@@ -41,9 +55,7 @@ export class CourseController {
   }
   async getCourse(req: Request, res: Response): Promise<void> {
     try {
-      console.log('req.params',req.params)
       const courseId = req.params.id as string;
-      console.log('course id got',courseId)
 
       const course = await this.courseUseCase.getCourse(courseId);
       if (!course) {
@@ -91,5 +103,4 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
 }

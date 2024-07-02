@@ -15,6 +15,14 @@ export class CourseUseCase  {
             throw new Error(`Failed to create course: ${error.message}`);
         }
     }
+    async updateCourse(course: CourseEntity): Promise<CourseEntity> {
+        try {
+            const updatedCourse = await this.courseRepository.updateCourse(course);
+            return updatedCourse;
+        } catch (error:any) {
+            throw new Error(`Failed to update course: ${error.message}`);
+        }
+    }
     async getAllCoursesOfInstructor(instructorId:string): Promise<CourseEntity[]> {
         try {
             const allCourses = await this.courseRepository.getAllCoursesOfInstructor(instructorId);
