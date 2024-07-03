@@ -1,3 +1,4 @@
+import CourseEntity from "../../domain/entities/course";
 import { EnrollmentEntity } from "../../domain/entities/enrollments";
 import { EnrollmentRepository } from "../../domain/repositories/enrollmentRepository";
 
@@ -20,4 +21,15 @@ export class EnrollmentUseCase{
             throw new Error(error.message)
         }
     }
+    async getStudentEnrolledCourses(userId: string): Promise<CourseEntity[] | []> {
+        try {
+            const enrolledCourses = await this.enrollmentRepository.getEnrolledCourses(userId);
+            return enrolledCourses;
+        } catch (error:any) {
+            throw new Error(`Failed to fetch enrolled course: ${error.message}`);
+        }
+    }
+    async updateLessonProgress (userId: string, courseId: string, lessonId: string, progress: number,totalLesson:number) {
+        return await this.enrollmentRepository.updateLessonProgress(userId,courseId,lessonId,progress,totalLesson);
+    };
 }

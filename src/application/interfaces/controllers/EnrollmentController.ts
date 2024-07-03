@@ -22,7 +22,6 @@ export class EnrollmentController {
     }
   }
   async checkEnrollment(req: Request, res: Response): Promise<void> {
-    console.log("request query of checkenrollment ", req.query);
 
     try {
       const { userId, courseId } = req.query;
@@ -47,4 +46,26 @@ export class EnrollmentController {
       res.status(500).json({ message: error.message });
     }
   }
+  async getStudentEnrolledCourses(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.params.userId as string
+      const enrolledCourses = await this.enrollmentUseCase.getStudentEnrolledCourses(userId);
+      res.status(200).json({ message: "successfully retrieved enrolled courses ", courses:enrolledCourses });
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async updateLessonProgress(req:Request,res:Response):Promise<void>{
+    try{
+      console.log('updated lesson progress reached in backend',req.body)
+      const {userId,courseId,lessonId,progress,totalLesson} = req.body
+      const updatedLessonProgress = await this.enrollmentUseCase.updateLessonProgress(userId,courseId,lessonId,progress,totalLesson)
+      res.status(200).json({ message: "successfully updated the lesson progress ", response:updatedLessonProgress });
+    }catch(error:any){
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+
 }

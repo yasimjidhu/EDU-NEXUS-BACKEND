@@ -72,7 +72,6 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
   async getAllCourses(req: Request, res: Response): Promise<void> {
     try {
       const courses = await this.courseUseCase.getAllCourses();
@@ -84,7 +83,6 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
   async getUnpublishedCourses(req: Request, res: Response): Promise<void> {
     try {
 
@@ -103,7 +101,6 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
   async postReview(req: Request, res: Response): Promise<void> {
     try {
       const response = await this.courseUseCase.getAllCourses();

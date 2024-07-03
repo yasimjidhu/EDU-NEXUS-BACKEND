@@ -12,4 +12,12 @@ export class ReviewUseCase{
             throw new Error(`Failed to add review  to the course: ${error.message}`);
         }
     }
+    async getUserReviews(courseId:string): Promise<ReviewEntity[] |[]> {
+        try {
+            const userReviews = await this.reviewRepository.getReviews(courseId);
+            return userReviews;
+        } catch (error:any) {
+            throw new Error(`Failed to retrieve reviews : ${error.message}`);
+        }
+    }
 }

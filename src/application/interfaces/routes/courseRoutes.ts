@@ -5,10 +5,10 @@ import {  categoryRepositoryImpl } from "../../../infrastructure/repositories/ca
 import { CourseController } from "../controllers/courseController"
 import { CourseUseCase } from "../../usecases/courseUseCase"
 import CourseRepositoryImpl from "../../../infrastructure/repositories/courseRepositoryImpl"
-import { enrollmentRepositoryImpl } from "../../../infrastructure/repositories/enrollmentRepositoryImpl"
+import { EnrollmentRepositoryImpl } from "../../../infrastructure/repositories/enrollmentRepositoryImpl"
 import { EnrollmentUseCase } from "../../usecases/enrollmentUseCase"
 import { EnrollmentController } from "../controllers/EnrollmentController"
-import { reviewRepositoryImpl } from "../../../infrastructure/repositories/reviewRepositoryimpl"
+import { ReviewRepositoryImpl } from "../../../infrastructure/repositories/reviewRepositoryimpl"
 import { ReviewUseCase } from "../../usecases/reviewUseCase"
 import { ReviewController } from "../controllers/reviewController"
 
@@ -17,8 +17,8 @@ const router = Router()
 // repositories
 const cateogyRepository = new categoryRepositoryImpl()
 const courseRepository = new CourseRepositoryImpl()
-const enrollmentRepository = new enrollmentRepositoryImpl()
-const reviewRepository = new reviewRepositoryImpl()
+const enrollmentRepository = new EnrollmentRepositoryImpl()
+const reviewRepository = new ReviewRepositoryImpl()
 
 // usecases
 const cateogyUsecase = new CategoryUseCase(cateogyRepository)
@@ -43,9 +43,12 @@ router.get('/get-courses/:instructorId',courseController.getAllCoursesOfInstruct
 router.get('/get-course/:id',courseController.getCourse.bind(courseController))
 router.get('/get-all-courses',courseController.getAllCourses.bind(courseController))
 router.post('/review',reviewController.addReview.bind(reviewController))
+router.get('/review/:courseId',reviewController.getReviews.bind(reviewController))
 router.get('/courseRequsts',courseController.getUnpublishedCourses.bind(courseController))
 router.post('/enrollment',enrollmentController.enrollment.bind(enrollmentController))
 router.get('/enrollment/check',enrollmentController.checkEnrollment.bind(enrollmentController))
+router.put('/enrollment/progress',enrollmentController.updateLessonProgress.bind(enrollmentController))
+router.get('/my-course/:userId',enrollmentController.getStudentEnrolledCourses.bind(enrollmentController))
 
 
 export default router

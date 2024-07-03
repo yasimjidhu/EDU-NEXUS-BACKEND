@@ -3,7 +3,7 @@ import { ReviewEntity } from "../../domain/entities/review";
 import { ReviewRepository } from "../../domain/repositories/reviewRepository";
 import { Review } from "../database/models/reviews"; 
 
-export class reviewRepositoryImpl implements ReviewRepository{
+export class ReviewRepositoryImpl implements ReviewRepository{
 
     async addReview(data: ReviewEntity): Promise<ReviewEntity | null> {
         try {
@@ -13,6 +13,26 @@ export class reviewRepositoryImpl implements ReviewRepository{
         } catch (error) {
             console.error('Error posting review:', error);
             return null
+        }
+    }
+    async getReviews(courseId:string): Promise<ReviewEntity[] | []> {
+        try {
+            const userReviews = await Review.find({ courseId }).lean().exec();
+            
+            const transformedReviews: ReviewEntity[] = userReviews.map(review => ({
+                _id: review._id?.toString(),
+                userId: review.userId.toString(),
+                courseId: review.courseId.toString(),
+                rating: review.rating,
+                content: review.content,
+                createdAt: review.createdAt,
+                updatedAt: review.updatedAt
+            }));
+            
+            return transformedReviews
+        } catch (error) {
+            console.error('Error getting reviews:', error);
+            return []
         }
     }
     
