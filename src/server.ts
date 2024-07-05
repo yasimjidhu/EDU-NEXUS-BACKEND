@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import cookieParser from "cookie-parser";
 import connectDB from "./infrastructure/database/course-db";
 import courseRouter from './application/interfaces/routes/courseRoutes'
+import router from './application/interfaces/routes/index'
 
 dotenv.config()
 
@@ -23,7 +24,7 @@ const corsOptions = {
   };
   app.use(cors(corsOptions))
 
-  app.use("/course",courseRouter);   
+  app.use("/course",router);   
 
   connectDB()
   .then(()=>{

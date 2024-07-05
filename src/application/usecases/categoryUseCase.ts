@@ -8,8 +8,8 @@ export class CategoryUseCase {
     async addCategory(data: { name: string; description: string; image: string }): Promise<CategoryEntity | null> {
         return await this.categoryRepository.addCategory(data.name, data.description, data.image);
     }
-    async getAllCategories():Promise<CategoryEntity[] | null>{
-        return await this.categoryRepository.getAllCategories()
+    async getAllCategories(page:number,limit:number):Promise<{ categories: CategoryEntity[]; totalCategories: number } | null>{
+        return await this.categoryRepository.getAllCategories(page,limit)
     }
     async updateCategory({_id, name, description, image}: { _id: string, name?: string, description?: string, image?: string }): Promise<CategoryEntity | null> {
         return await this.categoryRepository.updateCategory( {_id, name, description, image });

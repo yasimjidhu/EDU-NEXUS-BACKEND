@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 const assessmentSchema = new mongoose.Schema({
+  title:{
+    type:String,
+    required:true
+  },
   total_score: {
     type: Number,
     required: true
@@ -13,7 +17,7 @@ const assessmentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  lesson_id: {
+  instructor_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },

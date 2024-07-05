@@ -5,7 +5,6 @@ export class CourseController {
   constructor(private courseUseCase: CourseUseCase) {}
 
   async addCourse(req: Request, res: Response): Promise<void> {
-    console.log("request body of ", req.body);
     try {
       const course = await this.courseUseCase.addCourse(req.body);
       if (!course) {
@@ -73,11 +72,12 @@ export class CourseController {
     }
   }
   async getAllCourses(req: Request, res: Response): Promise<void> {
+    const page = parseInt(req.query.page as string)||1
+    const limit = 8
+
     try {
-      const courses = await this.courseUseCase.getAllCourses();
-      res
-        .status(200)
-        .json({ message: "courses retrieved successfully", courses: courses });
+      const courses = await this.courseUseCase.getAllCourses(page,limit);
+      res.status(200).json({ message: "courses retrieved successfully", courses });
     } catch (error: any) {
       console.log("error occured in retrieve courses", error);
       res.status(500).json({ message: error.message });
@@ -101,15 +101,23 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-  async postReview(req: Request, res: Response): Promise<void> {
+  async getCategoryWiseCourses(req: Request, res: Response): Promise<void> {
+    console.log('categorywise requeest reached in backend',req.params)
+    const { categoryId } = req.params
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = 8;
+    console.log('page in controller',page)
     try {
-      const response = await this.courseUseCase.getAllCourses();
-      res
-        .status(200)
-        .json({ message: "review added successfully",review:response });
+      const { allCourses, totalCourses } = await this.courseUseCase.getCategoryWiseCourses(
+        categoryId as string,
+        page,
+        limit
+      );
+      res.status(200).json({ message: "Courses retrieved successfully", allCourses, totalCourses });
     } catch (error: any) {
-      console.log("error occured in posting review", error);
+      console.error("Error occurred in retrieving courses:", error);
       res.status(500).json({ message: error.message });
     }
   }
+  
 }

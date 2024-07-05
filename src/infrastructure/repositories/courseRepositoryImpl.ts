@@ -1,7 +1,8 @@
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import CourseEntity from "../../domain/entities/course";
 import { CourseRepository } from "../../domain/repositories/courseRepository";
 import { Course } from "../database/models/courses";
+import { PaginatedCourse } from "../../types/course";
 
 class CourseRepositoryImpl implements CourseRepository {
   private readonly courseModel: Model<CourseEntity>;
@@ -50,7 +51,7 @@ class CourseRepositoryImpl implements CourseRepository {
                 pricing: { type: course.pricing.type, amount: course.pricing.amount },
                 level: course.level,
             },
-            { new: true } // This option returns the updated document
+            { new: true } 
         );
 
         if (!updatedCourse) {
@@ -74,25 +75,83 @@ class CourseRepositoryImpl implements CourseRepository {
       throw error; 
     }
   }
+  // async getCourse(courseId: string): Promise<CourseEntity> {
+  //   try {
+  //     const course = await Course.findById(courseId).exec();
+  //     if (!course) {
+  //       throw new Error(`Course with ID ${courseId} not found`);
+  //     }
+  //     return course.toObject() as CourseEntity;
+  //   } catch (error) {
+  //     console.error('Error retrieving course:', error);
+  //     throw error;
+  //   }
+  // }
+
   async getCourse(courseId: string): Promise<CourseEntity> {
     try {
-      const course = await Course.findById(courseId).exec();
-      if (!course) {
+      const course = await Course.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(courseId) } },
+        {
+          $lookup: {
+            from: 'assessments',
+            localField: '_id',
+            foreignField: 'course_id',
+            as: 'assessments'
+          }
+        },
+        {
+          $unwind: {
+            path: '$assessments',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $group: {
+            _id: '$_id',
+            title: { $first: '$title' },
+            description: { $first: '$description' },
+            lessons: { $first: '$lessons' },
+            assessments: { $push: '$assessments' }
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            description: 1,
+            lessons: 1,
+            assessments: {
+              $filter: {
+                input: '$assessments',
+                as: 'assessment',
+                cond: { $ne: ['$$assessment', null] }
+              }
+            }
+          }
+        }
+      ]).exec();
+
+      if (!course || course.length === 0) {
         throw new Error(`Course with ID ${courseId} not found`);
       }
-      return course.toObject() as CourseEntity;
+
+      return course[0] as CourseEntity;
     } catch (error) {
       console.error('Error retrieving course:', error);
       throw error;
     }
   }
-  async  getAllCourses(): Promise<CourseEntity[]> {
+
+  async  getAllCourses(page:number,limit:number): Promise<PaginatedCourse> {
     try {
-      const allCourses = await Course.find().exec();
-      return allCourses;
+      const skip = (page-1) * limit
+      const allCourses = await Course.find().skip(skip).limit(limit).exec();
+      const totalCourses = await Course.countDocuments()
+      return {allCourses,totalCourses};
     } catch (error: any) {
       console.error("Error retrieving all courses:", error);
-      return []; 
+      throw new Error('error retrieving all courses')
     }
   }
   async  getUnpublishedCourses(): Promise<CourseEntity[]> {
@@ -103,7 +162,20 @@ class CourseRepositoryImpl implements CourseRepository {
       console.error("Error retrieving unpublished courses:", error);
       return []; 
     }
+  } 
+  async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
+    try {
+      const skip = (page-1) * limit
+      const objectid = new mongoose.Types.ObjectId(categoryId)
+      const allCourses = await Course.find({ categoryRef:objectid }).skip(skip).limit(limit).exec()
+      const totalCourses = await Course.countDocuments()
+      return {allCourses,totalCourses}
+    } catch (error:any) {
+      console.error("Error retrieving category-wise courses:", error);
+      throw new Error(error)
+    }
   }
+  
 }
 
 export default CourseRepositoryImpl;

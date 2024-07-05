@@ -2,6 +2,7 @@
 
 import CourseEntity from "../../domain/entities/course";
 import CourseRepositoryImpl from "../../infrastructure/repositories/courseRepositoryImpl";
+import { PaginatedCourse } from "../../types/course";
 
 
 export class CourseUseCase  {
@@ -39,9 +40,9 @@ export class CourseUseCase  {
             throw new Error(`Failed to retrieve course: ${error.message}`);
         }
     }
-    async getAllCourses(): Promise<CourseEntity[]> {
+    async getAllCourses(page:number,limit:number): Promise<PaginatedCourse> {
         try {
-            const allCourses = await this.courseRepository.getAllCourses();
+            const allCourses = await this.courseRepository.getAllCourses(page,limit);
             return allCourses;
         } catch (error:any) {
             throw new Error(`Failed to retrieve courses: ${error.message}`);
@@ -54,6 +55,9 @@ export class CourseUseCase  {
         } catch (error:any) {
             throw new Error(`Failed to retrieve unpublished courses: ${error.message}`);
         }
+    }
+    async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
+        return await this.courseRepository.getCategoryWiseCourses(categoryId,page,limit);
     }
     
 }
