@@ -67,7 +67,6 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
     if (!enrollment.progress) {
       enrollment.progress = {
         completedLessons: [],
-        completedAssessments: [],
         overallCompletionPercentage: 0,
       };
     }
@@ -83,7 +82,9 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
     if (progress > 0 && !enrollment.progress.completedLessons.includes(lessonObjectId)) {
       enrollment.progress.completedLessons.push(lessonObjectId);
     }
-  
+    
+    console.log('total lesson',totalLesson)
+    console.log('enrollment completed lesson length',enrollment.progress.completedLessons.length)
     // Calculate the overallCompletionPercentage
     enrollment.progress.overallCompletionPercentage = (enrollment.progress.completedLessons.length / totalLesson) * 100;
     
@@ -97,5 +98,20 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
     console.log('updated enrollment',enrollment)
     // Return the updated enrollment as EnrollmentEntity
     return enrollment.toObject() as EnrollmentEntity;
+  }
+  async  updateAssessmentCompletion(userId: string, courseId: string): Promise<EnrollmentEntity | null> {
+    try {
+      const updatedCompletion = await Enrollment.findOneAndUpdate(
+        { userId: userId, courseId: courseId },
+        { $set: { assessmentCompleted: true } },
+        { new: true }
+      ) as EnrollmentEntity | null; 
+      console.log('assessmentCompletion updated',updatedCompletion)
+  
+      return updatedCompletion;
+    } catch (error: any) {
+      console.log('Error occurred while updating the assessment completion', error);
+      return null;
+    }
   }
 }

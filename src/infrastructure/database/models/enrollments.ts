@@ -5,9 +5,9 @@ export interface EnrollmentEntity extends Document {
   courseId: Types.ObjectId;
   enrolledAt: Date;
   completionStatus: 'enrolled' | 'in-progress' | 'completed';
+  assessmentCompleted:boolean;
   progress: {
     completedLessons: Types.ObjectId[];
-    completedAssessments: Types.ObjectId[];
     overallCompletionPercentage: number;
   };
 }
@@ -31,12 +31,12 @@ const enrollmentSchema = new Schema<EnrollmentEntity>({
     enum: ['enrolled', 'in-progress', 'completed'],
     default: 'enrolled',
   },
+  assessmentCompleted: {
+    type: Boolean,
+    default:false
+  },
   progress: {
     completedLessons: {
-      type: [Schema.Types.ObjectId],
-      default: [],
-    },
-    completedAssessments: {
       type: [Schema.Types.ObjectId],
       default: [],
     },

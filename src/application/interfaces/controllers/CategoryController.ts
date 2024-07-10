@@ -8,18 +8,18 @@ export class CategoryController {
     async handleAddCategory(req: Request, res: Response): Promise<void> {
         try {
             const category = await this.categoryUseCase.addCategory(req.body);
+            if (!category) {
+                res.status(500).json({ message: 'Error occurred while adding the category' });
+                return;
+            }
             res.status(200).json({ message: 'Category added successfully', category });
         } catch (error: any) {
-            console.log('error in controller>>>>>>>>',error)
-            res.status(400).json({ message: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
     async getAllCategories(req: Request, res: Response): Promise<void> {
-        const page = parseInt(req.query.page as string) || 1
-        const limit = 8
-
         try {
-            const categories = await this.categoryUseCase.getAllCategories(page,limit);
+            const categories = await this.categoryUseCase.getAllCategories();
             if (categories) {
                 res.status(200).json(categories);
             } else {

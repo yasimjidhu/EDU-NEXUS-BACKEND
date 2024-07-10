@@ -2,6 +2,7 @@ import { Router } from "express";
 import { ReviewController } from "../controllers/reviewController";
 import { ReviewUseCase } from "../../usecases/reviewUseCase";
 import { ReviewRepositoryImpl } from "../../../infrastructure/repositories/reviewRepositoryimpl";
+import authMiddleware, { studentMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
 
 const router = Router();
 

@@ -13,6 +13,7 @@ export class EnrollmentController {
           .json({ message: "Error occurred while enrolling to the course" });
         return;
       }
+    
       res
         .status(200)
         .json({ message: "successfully enrolled to the course  ", enrolledStudent });
@@ -62,6 +63,18 @@ export class EnrollmentController {
       const {userId,courseId,lessonId,progress,totalLesson} = req.body
       const updatedLessonProgress = await this.enrollmentUseCase.updateLessonProgress(userId,courseId,lessonId,progress,totalLesson)
       res.status(200).json({ message: "successfully updated the lesson progress ", response:updatedLessonProgress });
+    }catch(error:any){
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async updateAssessmentCompletion(req:Request,res:Response):Promise<void>{
+    try{
+      console.log('update assessment  reached in backend',req.body)
+      const {userId,courseId} = req.body
+
+      const updatedAssessmentCompletion = await this.enrollmentUseCase.updateAssessmentCompletion(userId,courseId)
+      res.status(200).json({ message: "successfully updated the assessment progress ", data:updatedAssessmentCompletion });
     }catch(error:any){
       console.log(error);
       res.status(500).json({ message: error.message });

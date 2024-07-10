@@ -4,7 +4,6 @@ import CourseEntity from "../../domain/entities/course";
 import CourseRepositoryImpl from "../../infrastructure/repositories/courseRepositoryImpl";
 import { PaginatedCourse } from "../../types/course";
 
-
 export class CourseUseCase  {
     constructor(private readonly courseRepository: CourseRepositoryImpl) {}
 
@@ -59,5 +58,4 @@ export class CourseUseCase  {
     async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
         return await this.courseRepository.getCategoryWiseCourses(categoryId,page,limit);
     }
-    
 }

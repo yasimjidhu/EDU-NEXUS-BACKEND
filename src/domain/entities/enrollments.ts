@@ -13,9 +13,9 @@ export interface EnrollmentEntity {
     courseId: Types.ObjectId;
     enrolledAt?: Date | string;
     completionStatus?: CompleationStatus;
+    assessmentCompleted?:boolean;
     progress?: {
         completedLessons?:  Types.ObjectId[] | [] | null;
-        completedAssessments?: Types.ObjectId[] | [] | null;
         overallCompletionPercentage?: number
     };
 };

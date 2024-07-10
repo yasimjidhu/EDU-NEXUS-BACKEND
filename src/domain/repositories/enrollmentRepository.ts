@@ -6,4 +6,5 @@ export interface EnrollmentRepository {
   isUserEnrolled(userId: string, courseId: string): Promise<boolean>;
   getEnrolledCourses(userId: string): Promise<CourseEntity[] | []>;
   updateLessonProgress(userId: string, courseId: string, lessonId: string, progress: number,totalLesson:number): Promise<EnrollmentEntity>
+  updateAssessmentCompletion(userId:string,courseId:string):Promise<EnrollmentEntity | null>
 }

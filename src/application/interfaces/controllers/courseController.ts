@@ -5,6 +5,7 @@ export class CourseController {
   constructor(private courseUseCase: CourseUseCase) {}
 
   async addCourse(req: Request, res: Response): Promise<void> {
+
     try {
       const course = await this.courseUseCase.addCourse(req.body);
       if (!course) {
@@ -71,6 +72,7 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
+
   async getAllCourses(req: Request, res: Response): Promise<void> {
     const page = parseInt(req.query.page as string)||1
     const limit = 8
@@ -83,6 +85,7 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
+
   async getUnpublishedCourses(req: Request, res: Response): Promise<void> {
     try {
 
@@ -102,11 +105,10 @@ export class CourseController {
     }
   }
   async getCategoryWiseCourses(req: Request, res: Response): Promise<void> {
-    console.log('categorywise requeest reached in backend',req.params)
     const { categoryId } = req.params
     const page = parseInt(req.query.page as string) || 1;
     const limit = 8;
-    console.log('page in controller',page)
+  
     try {
       const { allCourses, totalCourses } = await this.courseUseCase.getCategoryWiseCourses(
         categoryId as string,
@@ -119,5 +121,5 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-  
+
 }

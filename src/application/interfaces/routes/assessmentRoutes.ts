@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AssessmentController } from "../controllers/assessmentController";
 import { AssessmentUseCase } from "../../usecases/assessmentUseCase";
 import { AssessmentRepositoryImpl } from "../../../infrastructure/repositories/assessmentRepositoryImpl";
+import authMiddleware, { instructorMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
 
 const router = Router();
 
@@ -15,9 +16,9 @@ const assessmentUseCase = new AssessmentUseCase(assessmentRepository);
 const assessmentController = new AssessmentController(assessmentUseCase);
 
 // Routes
-router.post('/assessment', assessmentController.addAssessment.bind(assessmentController));
+router.post('/assessment',authMiddleware,instructorMiddleware, assessmentController.addAssessment.bind(assessmentController));
 router.get('/assessment/:instructorId', assessmentController.getAssessments.bind(assessmentController));
 router.get('/assessment/:assessmentId', assessmentController.getAssessment.bind(assessmentController));
-router.put('/assessment', assessmentController.updateAssessment.bind(assessmentController));
+router.put('/assessment',authMiddleware,instructorMiddleware, assessmentController.updateAssessment.bind(assessmentController));
 
 export default router;

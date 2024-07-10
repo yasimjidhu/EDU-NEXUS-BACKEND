@@ -17,8 +17,8 @@ export class ReviewRepositoryImpl implements ReviewRepository{
     }
     async getReviews(courseId:string): Promise<ReviewEntity[] | []> {
         try {
+           
             const userReviews = await Review.find({ courseId }).lean().exec();
-            
             const transformedReviews: ReviewEntity[] = userReviews.map(review => ({
                 _id: review._id?.toString(),
                 userId: review.userId.toString(),
@@ -28,7 +28,6 @@ export class ReviewRepositoryImpl implements ReviewRepository{
                 createdAt: review.createdAt,
                 updatedAt: review.updatedAt
             }));
-            
             return transformedReviews
         } catch (error) {
             console.error('Error getting reviews:', error);

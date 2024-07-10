@@ -32,4 +32,7 @@ export class EnrollmentUseCase{
     async updateLessonProgress (userId: string, courseId: string, lessonId: string, progress: number,totalLesson:number) {
         return await this.enrollmentRepository.updateLessonProgress(userId,courseId,lessonId,progress,totalLesson);
     };
+    async updateAssessmentCompletion(userId: string, courseId: string) {
+        return await this.enrollmentRepository.updateAssessmentCompletion(userId,courseId);
+    };
 }

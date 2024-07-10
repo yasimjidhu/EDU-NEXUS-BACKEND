@@ -112,7 +112,16 @@ class CourseRepositoryImpl implements CourseRepository {
             title: { $first: '$title' },
             description: { $first: '$description' },
             lessons: { $first: '$lessons' },
-            assessments: { $push: '$assessments' }
+            assessments: { $push: '$assessments' },
+            thumbnail: { $first: '$thumbnail' },
+            trial: { $first: '$trial' },
+            category: { $first: '$category' },
+            categoryRef: { $first: '$categoryRef' },
+            instructorRef: { $first: '$instructorRef' },
+            certificationAvailable: { $first: '$certificationAvailable' },
+            pricing: { $first: '$pricing' },
+            level: { $first: '$level' },
+            courseAmount: { $first: '$courseAmount' }
           }
         },
         {
@@ -127,21 +136,31 @@ class CourseRepositoryImpl implements CourseRepository {
                 as: 'assessment',
                 cond: { $ne: ['$$assessment', null] }
               }
-            }
+            },
+            thumbnail: 1,
+            trial: 1,
+            category: 1,
+            categoryRef: 1,
+            instructorRef: 1,
+            certificationAvailable: 1,
+            pricing: 1,
+            level: 1,
+            courseAmount: 1
           }
         }
       ]).exec();
-
+  
       if (!course || course.length === 0) {
         throw new Error(`Course with ID ${courseId} not found`);
       }
-
+  
       return course[0] as CourseEntity;
     } catch (error) {
       console.error('Error retrieving course:', error);
       throw error;
     }
   }
+  
 
   async  getAllCourses(page:number,limit:number): Promise<PaginatedCourse> {
     try {
