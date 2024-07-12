@@ -1,4 +1,4 @@
-import { PaginatedCourse } from "../../types/course";
+import { PaginatedCourse ,TApproveCourse} from "../../types/course";
 import CourseEntity from "../entities/course";
 
 export interface CourseRepository {
@@ -7,6 +7,8 @@ export interface CourseRepository {
     getAllCoursesOfInstructor(id: string): Promise<CourseEntity[]>;
     getCourse(courseId: string): Promise<CourseEntity>;
     getAllCourses(skip:number,limit:number):Promise<PaginatedCourse>
-    getUnpublishedCourses():Promise<CourseEntity[] >
+    getUnpublishedCourses(page:number,limit:number):Promise<PaginatedCourse >
     getCategoryWiseCourses(categoryId: string,page:number,limit:number):Promise<PaginatedCourse>
+    approveCourse(data:TApproveCourse):Promise<CourseEntity>
+    rejectCourse(data:TApproveCourse):Promise<CourseEntity>
 }

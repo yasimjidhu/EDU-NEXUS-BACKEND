@@ -4,6 +4,7 @@ import { ReviewUseCase } from "../../usecases/reviewUseCase";
 import { ReviewRepositoryImpl } from "../../../infrastructure/repositories/reviewRepositoryimpl";
 import authMiddleware, { studentMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
 
+
 const router = Router();
 
 // Repository
@@ -16,7 +17,7 @@ const reviewUseCase = new ReviewUseCase(reviewRepository);
 const reviewController = new ReviewController(reviewUseCase);
 
 // Routes
-router.post('/review', reviewController.addReview.bind(reviewController));
+router.post('/review',authMiddleware,studentMiddleware, reviewController.addReview.bind(reviewController));
 router.get('/review/:courseId', reviewController.getReviews.bind(reviewController));
 
 export default router;

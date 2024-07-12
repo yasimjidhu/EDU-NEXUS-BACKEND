@@ -16,9 +16,9 @@ const categoryUseCase = new CategoryUseCase(categoryRepository);
 const categoryController = new CategoryController(categoryUseCase);
 
 // Routes
-router.post('/add-category', authMiddleware,adminMiddleware,categoryController.handleAddCategory.bind(categoryController));
-router.put('/update-category', authMiddleware,adminMiddleware, categoryController.updateCategory.bind(categoryController));
+router.post('/', authMiddleware,adminMiddleware,categoryController.handleAddCategory.bind(categoryController));
+router.put('/', authMiddleware,adminMiddleware, categoryController.updateCategory.bind(categoryController));
 router.post('/block/:categoryId', authMiddleware,adminMiddleware, categoryController.blockCategory.bind(categoryController));
-router.get('/categories', categoryController.getAllCategories.bind(categoryController));
+router.get('/', categoryController.getAllCategories.bind(categoryController));
 
 export default router;

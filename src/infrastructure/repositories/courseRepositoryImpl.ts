@@ -2,7 +2,7 @@ import mongoose, { Model } from "mongoose";
 import CourseEntity from "../../domain/entities/course";
 import { CourseRepository } from "../../domain/repositories/courseRepository";
 import { Course } from "../database/models/courses";
-import { PaginatedCourse } from "../../types/course";
+import { PaginatedCourse,TApproveCourse } from "../../types/course";
 
 class CourseRepositoryImpl implements CourseRepository {
   private readonly courseModel: Model<CourseEntity>;
@@ -67,7 +67,7 @@ class CourseRepositoryImpl implements CourseRepository {
 }
   async  getAllCoursesOfInstructor(id: string): Promise<CourseEntity[]> {
     try {
-      const allCourses = await Course.find({ instructorRef: id }).exec();
+      const allCourses = await Course.find({ instructorRef: new mongoose.Types.ObjectId(id)}).exec();
       return allCourses;
 
     } catch (error) {
@@ -75,18 +75,6 @@ class CourseRepositoryImpl implements CourseRepository {
       throw error; 
     }
   }
-  // async getCourse(courseId: string): Promise<CourseEntity> {
-  //   try {
-  //     const course = await Course.findById(courseId).exec();
-  //     if (!course) {
-  //       throw new Error(`Course with ID ${courseId} not found`);
-  //     }
-  //     return course.toObject() as CourseEntity;
-  //   } catch (error) {
-  //     console.error('Error retrieving course:', error);
-  //     throw error;
-  //   }
-  // }
 
   async getCourse(courseId: string): Promise<CourseEntity> {
     try {
@@ -173,13 +161,15 @@ class CourseRepositoryImpl implements CourseRepository {
       throw new Error('error retrieving all courses')
     }
   }
-  async  getUnpublishedCourses(): Promise<CourseEntity[]> {
+  async  getUnpublishedCourses(page:number,limit:number): Promise<PaginatedCourse> {
     try {
-      const allUnpublishedCourses = await Course.find({isPublished:false}).exec();
-      return allUnpublishedCourses;
+      const skip = (page -1) * limit
+      const allCourses = await Course.find({isPublished:false}).skip(skip).limit(limit).exec();
+      const totalCourses = allCourses.length
+      return {allCourses,totalCourses};
     } catch (error: any) {
       console.error("Error retrieving unpublished courses:", error);
-      return []; 
+      throw new Error('error retrieving unpublished courses')
     }
   } 
   async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
@@ -194,7 +184,42 @@ class CourseRepositoryImpl implements CourseRepository {
       throw new Error(error)
     }
   }
-  
+  async approveCourse(data:TApproveCourse): Promise<CourseEntity> {
+    try {
+      const objectID = new mongoose.Types.ObjectId(data.courseId)
+      const result = await Course.findOneAndUpdate(
+        {_id:objectID},
+        {isPublished:true},
+        {new:true}
+      ).exec()
+
+      if (!result) {
+        throw new Error(`Course with ID ${objectID} not found`);
+      }
+      return result
+    } catch (error:any) {
+      console.error("Error approving course:", error);
+      throw new Error(`Failed to approve course: ${error.message}`);
+    }
+  }
+  async rejectCourse(data:TApproveCourse): Promise<CourseEntity> {
+    try {
+      const objectID = new mongoose.Types.ObjectId(data.courseId)
+      const result = await Course.findOneAndUpdate(
+        {_id:objectID},
+        {isPublished:false},
+        {new:true}
+      ).exec()
+
+      if (!result) {
+        throw new Error(`Course with ID ${objectID} not found`);
+      }
+      return result
+    } catch (error:any) {
+      console.error("Error approving course:", error);
+      throw new Error(`Failed to approve course: ${error.message}`);
+    }
+  }
 }
 
 export default CourseRepositoryImpl;

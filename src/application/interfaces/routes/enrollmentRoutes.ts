@@ -21,5 +21,6 @@ router.get('/enrollment/check', enrollmentController.checkEnrollment.bind(enroll
 router.put('/enrollment/progress', enrollmentController.updateLessonProgress.bind(enrollmentController));
 router.get('/my-course/:userId', enrollmentController.getStudentEnrolledCourses.bind(enrollmentController));
 router.post('/update-completion', enrollmentController.updateAssessmentCompletion.bind(enrollmentController));
+router.get('/instructorRefs/:userId', enrollmentController.getEnrolledInstructorRefs.bind(enrollmentController));
 
 export default router;

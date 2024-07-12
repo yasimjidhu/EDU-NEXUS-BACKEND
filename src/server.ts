@@ -23,7 +23,7 @@ const corsOptions = {
   };
   app.use(cors(corsOptions))
 
-  app.use("/",router);   
+  app.use("/course",router);   
 
   connectDB()
   .then(()=>{

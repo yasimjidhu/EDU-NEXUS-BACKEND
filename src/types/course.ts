@@ -4,3 +4,8 @@ export interface PaginatedCourse{
     allCourses:CourseEntity[];
     totalCourses:number;
 }
+
+export interface TApproveCourse{
+    courseId:string;
+    email:string;
+}

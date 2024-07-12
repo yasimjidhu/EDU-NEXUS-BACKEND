@@ -75,7 +75,7 @@ export class CourseController {
 
   async getAllCourses(req: Request, res: Response): Promise<void> {
     const page = parseInt(req.query.page as string)||1
-    const limit = 8
+    const limit = 6
 
     try {
       const courses = await this.courseUseCase.getAllCourses(page,limit);
@@ -88,17 +88,11 @@ export class CourseController {
 
   async getUnpublishedCourses(req: Request, res: Response): Promise<void> {
     try {
+      const page = parseInt(req.query.page as string)||1
+      const limit = 10
+      const {allCourses,totalCourses} = await this.courseUseCase.getUnpublishedCourses(page,limit);
 
-      const allUnpublishedCourses = await this.courseUseCase.getUnpublishedCourses();
-      if (!allUnpublishedCourses) {
-        res
-          .status(500)
-          .json({ message: "Error occurred while fetching  course" });
-        return;
-      }
-      res
-        .status(200)
-        .json({ message: "course retrieved successfully", courses: allUnpublishedCourses });
+      res.status(200).json({ message: "course retrieved successfully", allCourses,totalCourses });
     } catch (error: any) {
       console.log("error occured in  course retrieval", error);
       res.status(500).json({ message: error.message });
@@ -118,6 +112,30 @@ export class CourseController {
       res.status(200).json({ message: "Courses retrieved successfully", allCourses, totalCourses });
     } catch (error: any) {
       console.error("Error occurred in retrieving courses:", error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async approveCourse(req: Request, res: Response): Promise<void> {
+    const { courseId } = req.params;
+    const { email } = req.body;
+
+    try {
+      const updatedCourse = await this.courseUseCase.approveCourse({courseId,email});
+      res.status(200).json({ message: "Course approved successfully", updatedCourse });
+    } catch (error: any) {
+      console.error("Error occurred in approving course:", error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async rejectCourse(req: Request, res: Response): Promise<void> {
+    const { courseId } = req.params;
+    const { email } = req.body;
+
+    try {
+      await this.courseUseCase.rejectCourse({courseId,email});
+      res.status(200).json({ message: "Course rejected successfully" });
+    } catch (error: any) {
+      console.error("Error occurred in rejecting course:", error);
       res.status(500).json({ message: error.message });
     }
   }

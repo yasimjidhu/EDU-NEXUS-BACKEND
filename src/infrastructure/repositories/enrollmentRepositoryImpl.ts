@@ -114,4 +114,36 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
       return null;
     }
   }
+  async  enrolledInstructorRefs(userId: string): Promise<any[]> {
+    const enrolledInstructors = await Enrollment.aggregate([
+      {
+        $match: { userId: new mongoose.Types.ObjectId(userId) }
+      },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: 'courseId',
+          foreignField: '_id',
+          as: 'course'
+        }
+      },
+      {
+        $unwind: '$course'
+      },
+      {
+        $group: {
+          _id: null,
+          instructorRefs: { $addToSet: '$course.instructorRef' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          instructorRefs: 1
+        }
+      }
+    ]);
+    console.log('enrolled instructors',enrolledInstructors)
+    return enrolledInstructors[0]?.instructorRefs || [];
+  }
 }

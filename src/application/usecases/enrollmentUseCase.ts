@@ -35,4 +35,7 @@ export class EnrollmentUseCase{
     async updateAssessmentCompletion(userId: string, courseId: string) {
         return await this.enrollmentRepository.updateAssessmentCompletion(userId,courseId);
     };
+    async getEnrolledInstructorsRefs(userId:string):Promise<any[]>{
+        return this.enrollmentRepository.enrolledInstructorRefs(userId)
+    }
 }

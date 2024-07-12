@@ -70,11 +70,21 @@ export class EnrollmentController {
   }
   async updateAssessmentCompletion(req:Request,res:Response):Promise<void>{
     try{
-      console.log('update assessment  reached in backend',req.body)
       const {userId,courseId} = req.body
 
       const updatedAssessmentCompletion = await this.enrollmentUseCase.updateAssessmentCompletion(userId,courseId)
       res.status(200).json({ message: "successfully updated the assessment progress ", data:updatedAssessmentCompletion });
+    }catch(error:any){
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async getEnrolledInstructorRefs(req:Request,res:Response):Promise<void>{
+    try{
+      const {userId} = req.params
+
+      const instructorRefs = await this.enrollmentUseCase.getEnrolledInstructorsRefs(userId)  
+      res.status(200).json({ message: "successfully retrieved the instructors reference ", instructorRefs:instructorRefs });
     }catch(error:any){
       console.log(error);
       res.status(500).json({ message: error.message });

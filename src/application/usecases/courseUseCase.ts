@@ -1,8 +1,9 @@
 // domain/usecases/createCourse.ts
 
 import CourseEntity from "../../domain/entities/course";
+import { sendMessage } from "../../infrastructure/kafka/service";
 import CourseRepositoryImpl from "../../infrastructure/repositories/courseRepositoryImpl";
-import { PaginatedCourse } from "../../types/course";
+import { PaginatedCourse,TApproveCourse } from "../../types/course";
 
 export class CourseUseCase  {
     constructor(private readonly courseRepository: CourseRepositoryImpl) {}
@@ -47,9 +48,9 @@ export class CourseUseCase  {
             throw new Error(`Failed to retrieve courses: ${error.message}`);
         }
     }
-    async getUnpublishedCourses(): Promise<CourseEntity[]> {
+    async getUnpublishedCourses(page:number,limit:number): Promise<PaginatedCourse> {
         try {
-            const unpublishedCourses = await this.courseRepository.getUnpublishedCourses();
+            const unpublishedCourses = await this.courseRepository.getUnpublishedCourses(page,limit);
             return unpublishedCourses;
         } catch (error:any) {
             throw new Error(`Failed to retrieve unpublished courses: ${error.message}`);
@@ -57,5 +58,19 @@ export class CourseUseCase  {
     }
     async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
         return await this.courseRepository.getCategoryWiseCourses(categoryId,page,limit);
+    }
+    async approveCourse(data:TApproveCourse):Promise<CourseEntity>{
+        const updatedCourse = await this.courseRepository.approveCourse(data)
+        if(updatedCourse){
+            const approvalMailSent = await sendMessage({email:data.email,courseName:updatedCourse.title,action:'approve'})
+        }
+        return updatedCourse
+    }
+    async rejectCourse(data:TApproveCourse):Promise<CourseEntity>{
+        const updatedCourse = await this.courseRepository.rejectCourse(data)
+        if(updatedCourse){
+            const approvalMailSent = await sendMessage({email:data.email,courseName:updatedCourse.title,action:'reject'})
+        }
+        return updatedCourse
     }
 }

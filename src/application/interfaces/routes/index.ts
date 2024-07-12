@@ -7,10 +7,10 @@ import assessmentRoutes from "./assessmentRoutes";
 
 const router = Router();
 
-router.use(categoryRoutes);
-router.use(courseRoutes);
-router.use(enrollmentRoutes);
-router.use(reviewRoutes);
-router.use(assessmentRoutes);
+router.use('/categories', categoryRoutes); 
+router.use('/courses', courseRoutes);
+router.use('/enrollments', enrollmentRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/assessments', assessmentRoutes);
 
 export default router;

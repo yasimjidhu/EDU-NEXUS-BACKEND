@@ -18,12 +18,17 @@ export class CategoryController {
         }
     }
     async getAllCategories(req: Request, res: Response): Promise<void> {
+            const page = parseInt(req.query.page as string)|| 1
+            const limit = 6
+
         try {
-            const categories = await this.categoryUseCase.getAllCategories();
-            if (categories) {
-                res.status(200).json(categories);
-            } else {
-                res.status(404).json({ message: 'No categories found' });
+        
+            const result = await this.categoryUseCase.getAllCategories(page,limit);
+            if(result){
+                const { categories, totalCategories } = result;
+                res.status(200).json({categories,totalCategories})
+            }else{
+                res.status(500).json({ error: 'Failed to retrieve categories' });
             }
         } catch (error: any) {
             console.error('Error in CategoryController:', error);

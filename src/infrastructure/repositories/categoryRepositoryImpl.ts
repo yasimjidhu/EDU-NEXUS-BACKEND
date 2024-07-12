@@ -1,6 +1,7 @@
 // MongoCategoryRepository.ts
 import { CategoryEntity } from "../../domain/entities/category";
 import { CategoryRepository } from "../../domain/repositories/categoryRepository";
+import { PaginatedCategories } from "../../types/category";
 import { Category } from "../database/models/category"; // Assuming this is the Mongoose model
 
 export class categoryRepositoryImpl implements CategoryRepository {
@@ -24,19 +25,25 @@ export class categoryRepositoryImpl implements CategoryRepository {
       return null;
     }
   }
-  async getAllCategories(): Promise<CategoryEntity[] | null> {
+  async getAllCategories(page: number, limit: number): Promise<PaginatedCategories | null> {
     try {
-        const categories = await Category.find({ isBlocked: false }).exec();
-        return categories.map(
-            (category) =>
-                new CategoryEntity(
-                    category._id.toString(),
-                    category.name,
-                    category.description,
-                    category.image,
-                    category.isBlocked
-                )
-        );
+        const skip = (page - 1) * limit;
+        const categories = await Category.find({ isBlocked: false }).skip(skip).limit(limit).exec();
+        const totalCategories = await Category.countDocuments({ isBlocked: false });
+
+        return {
+            categories: categories.map(
+                (category) =>
+                    new CategoryEntity(
+                        category._id.toString(),
+                        category.name,
+                        category.description,
+                        category.image,
+                        category.isBlocked
+                    )
+            ),
+            totalCategories,
+        };
     } catch (error) {
         console.error("Error retrieving categories:", error);
         return null;
