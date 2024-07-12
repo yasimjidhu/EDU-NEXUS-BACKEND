@@ -1,28 +1,24 @@
 import { PaymentEntity } from "../../domain/entities/payment";
 import { PaymentRepository } from "../../infrastructure/database/repositories/paymentRepository";
 import { IPaymentService } from '../interfaces/IPaymentService';
+import Stripe from "stripe";
 
 export class PaymentUseCase {
+  private stripe:Stripe;
   constructor(
     private paymentRepository: PaymentRepository,
-    private paymentService: IPaymentService
-  ) {}
-
-  async createPaymentIntent(userId: string,courseId:string, amount: number, currency: string): Promise<{ clientSecret: string }> {
-    const { clientSecret } = await this.paymentService.createPaymentIntent(userId,courseId, amount, currency);
-    
-    const payment = new PaymentEntity(
-      userId,
-      courseId,
+    private paymentService: IPaymentService,
+  ) {
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "")
+  }
+  async createPaymentIntent( amount: number): Promise<Stripe.PaymentIntent> {
+    return this.stripe.paymentIntents.create({
       amount,
-      currency,
-      'pending',
-      new Date(),
-      new Date()
-    );
-
-    await this.paymentRepository.create(payment);
-    return { clientSecret };
+      currency:'INR',
+      automatic_payment_methods:{
+        enabled:true
+      }
+    })
   }
 
   async confirmPayment(paymentIntentId: string): Promise<void> {

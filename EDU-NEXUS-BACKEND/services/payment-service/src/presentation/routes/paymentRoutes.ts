@@ -12,8 +12,7 @@ const paymentService = new StripePaymentService()
 const paymentUseCase = new PaymentUseCase(paymentRepository,paymentService)
 const paymentController = new PaymentController(paymentUseCase)
 
-
-router.post('/create',paymentController.createPaymentIntent.bind(paymentController))
+router.post('/payment-intent',paymentController.createPaymentIntent.bind(paymentController))
 router.post('/confirm',paymentController.confirmPayment.bind(paymentController));
 router.get('payments/:userId',paymentController.getUserPayments.bind(paymentController));
 router.post('/stripe-webhook', express.raw({type: 'application/json'}), handleStripeWebhook);

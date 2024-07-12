@@ -5,11 +5,11 @@ export class PaymentController {
   constructor(private paymentUseCase: PaymentUseCase) {}
 
   async createPaymentIntent(req: Request, res: Response): Promise<void> {
+    const { amount } = req.body;
     try {
       console.log('payment request reached in payment',req.body)
-      const { userId,courseId, amount, currency } = req.body;
-      const result = await this.paymentUseCase.createPaymentIntent(userId,courseId, amount, currency);
-      res.status(200).json(result);
+      const paymentIntent = await this.paymentUseCase.createPaymentIntent(amount);
+      res.status(200).json({client_secret:paymentIntent.client_secret});
     } catch (error) {
       console.error('Error creating payment intent:', error);
       res.status(500).json({ error: 'Internal Server Error' });

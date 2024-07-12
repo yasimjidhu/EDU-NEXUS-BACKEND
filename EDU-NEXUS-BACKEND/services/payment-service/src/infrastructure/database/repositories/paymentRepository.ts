@@ -16,19 +16,19 @@ export class PaymentRepository implements IPaymentRepository {
     return result.rows[0];
   }
 
-  async findById(id: string): Promise<Payment | null> {
+  async findById(id: string): Promise<PaymentEntity | null> {
     const query = 'SELECT * FROM payments WHERE id = $1';
     const result = await this.pool.query(query, [id]);
     return result.rows[0] || null;
   }
 
-  async findByUserId(userId: string): Promise<Payment[]> {
+  async findByUserId(userId: string): Promise<PaymentEntity[]> {
     const query = 'SELECT * FROM payments WHERE user_id = $1';
     const result = await this.pool.query(query, [userId]);
     return result.rows;
   }
 
-  async update(payment: Payment): Promise<Payment> {
+  async update(payment: PaymentEntity): Promise<PaymentEntity> {
     const query = `
       UPDATE payments
       SET status = $1, updated_at = $2

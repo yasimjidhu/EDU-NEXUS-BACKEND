@@ -20,7 +20,8 @@ const corsOptions = {
   allowedHeaders: 'Content-Type,Authorization',
 };
 app.use(cors(corsOptions));
-app.use('/',router)
+
+app.use('/payment',router)
 
 app.listen(3005, () => {
   console.log('payment service running on port 3005 ');
