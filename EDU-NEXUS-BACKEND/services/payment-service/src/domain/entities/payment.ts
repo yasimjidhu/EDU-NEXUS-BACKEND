@@ -1,5 +1,8 @@
+import { v4 as uuidv4 } from 'uuid'; // Importing a UUID generator
+
 export class PaymentEntity {
     id?: string;
+    sessionId: string;
     userId: string;
     courseId:string;
     amount: number;
@@ -9,6 +12,7 @@ export class PaymentEntity {
     updatedAt: Date;
   
     constructor(
+      sessionId: string,
       userId: string,
       courseId: string,
       amount: number,
@@ -16,9 +20,10 @@ export class PaymentEntity {
       status: 'pending' | 'completed' | 'failed',
       createdAt: Date,
       updatedAt: Date,
-      id?: string
+      id: string = uuidv4()
     ) {
       this.id = id;
+      this.sessionId = sessionId;
       this.userId = userId;
       this.courseId = courseId;
       this.amount = amount;

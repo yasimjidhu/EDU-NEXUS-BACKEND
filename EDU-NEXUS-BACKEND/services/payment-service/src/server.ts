@@ -3,7 +3,10 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import router from './presentation/routes/paymentRoutes';
+import { router } from './presentation/routes/paymentRoute';
+import { StartPaymentDb } from './infrastructure/database/paymentDb';
+
+
 
 dotenv.config();
 
@@ -21,8 +24,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+
 app.use('/payment',router)
 
-app.listen(3005, () => {
-  console.log('payment service running on port 3005 ');
-});
+StartPaymentDb()
+  app.listen(3005, () => {
+    console.log('payment service running on port 3005 ');
+  })

@@ -1,25 +1,39 @@
-import nodemailer from 'nodemailer';
-import { EmailRepository } from "../../domain/repositories/emailRepository";
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-export class EmailService implements EmailRepository {
-    private transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-
-    async sendApprovalEmail(email: string,course): Promise<void> {
-        const mailOptions = {
-            from: '"Edu-Nexus The E-learning Platform" <' + process.env.EMAIL_USER + '>',
-            to: email,
-            subject: 'Congratulations! You have been approved as an instructor',
-            text: 'Dear Instructor,\n\nWe are thrilled to inform you that you have been approved as an instructor on Edu-Nexus. We are excited to see the impact you will make by sharing your knowledge and expertise with our learners.\n\nBest regards,\nThe Edu-Nexus Team',
-            html: `
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EmailService = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+class EmailService {
+    constructor() {
+        this.transporter = nodemailer_1.default.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+    }
+    sendApprovalEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailOptions = {
+                from: '"Edu-Nexus The E-learning Platform" <' + process.env.EMAIL_USER + '>',
+                to: email,
+                subject: 'Congratulations! You have been approved as an instructor',
+                text: 'Dear Instructor,\n\nWe are thrilled to inform you that you have been approved as an instructor on Edu-Nexus. We are excited to see the impact you will make by sharing your knowledge and expertise with our learners.\n\nBest regards,\nThe Edu-Nexus Team',
+                html: `
                 <div style="font-family: Arial, sans-serif; color: #333;">
                     <div style="background-color: #f7f7f7; padding: 20px; border-radius: 10px;">
                         <h1 style="color: #4CAF50;">Congratulations!</h1>
@@ -40,18 +54,18 @@ export class EmailService implements EmailRepository {
                     </div>
                 </div>
             `,
-        };
-
-        await this.transporter.sendMail(mailOptions);
+            };
+            yield this.transporter.sendMail(mailOptions);
+        });
     }
-
-    async sendRejectionEmail(email: string): Promise<void> {
-        const mailOptions = {
-            from: '"Edu-Nexus The E-learning Platform" <' + process.env.EMAIL_USER + '>',
-            to: email,
-            subject: 'Application Update: Your instructor application status',
-            text: 'Dear Applicant,\n\nWe regret to inform you that your application to become an instructor on Edu-Nexus has been rejected at this time.\n\nIf you have any questions or would like further feedback, please feel free to contact our support team at support@edu-nexus.com.\n\nBest regards,\nThe Edu-Nexus Team',
-            html: `
+    sendRejectionEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailOptions = {
+                from: '"Edu-Nexus The E-learning Platform" <' + process.env.EMAIL_USER + '>',
+                to: email,
+                subject: 'Application Update: Your instructor application status',
+                text: 'Dear Applicant,\n\nWe regret to inform you that your application to become an instructor on Edu-Nexus has been rejected at this time.\n\nIf you have any questions or would like further feedback, please feel free to contact our support team at support@edu-nexus.com.\n\nBest regards,\nThe Edu-Nexus Team',
+                html: `
                 <div style="font-family: Arial, sans-serif; color: #333;">
                     <div style="background-color: #f7f7f7; padding: 20px; border-radius: 10px;">
                         <h1 style="color: #f44336;">Application Update</h1>
@@ -64,17 +78,18 @@ export class EmailService implements EmailRepository {
                     </div>
                 </div>
             `,
-        };
-
-        await this.transporter.sendMail(mailOptions);
+            };
+            yield this.transporter.sendMail(mailOptions);
+        });
     }
-    async sendCourseApprovalEmail(email: string, courseName: string): Promise<void> {
-        const mailOptions = {
-            from: `"Edu-Nexus The E-learning Platform" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: 'Your Course Has Been Approved!',
-            text: `Dear Instructor,\n\nWe are pleased to inform you that your course "${courseName}" has been approved and is now live on Edu-Nexus.\n\nBest regards,\nThe Edu-Nexus Team`,
-            html: `
+    sendCourseApprovalEmail(email, courseName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailOptions = {
+                from: `"Edu-Nexus The E-learning Platform" <${process.env.EMAIL_USER}>`,
+                to: email,
+                subject: 'Your Course Has Been Approved!',
+                text: `Dear Instructor,\n\nWe are pleased to inform you that your course "${courseName}" has been approved and is now live on Edu-Nexus.\n\nBest regards,\nThe Edu-Nexus Team`,
+                html: `
                 <div style="font-family: Arial, sans-serif; color: #333;">
                     <div style="background-color: #f7f7f7; padding: 20px; border-radius: 10px;">
                         <h1 style="color: #4CAF50;">Course Approved!</h1>
@@ -88,18 +103,18 @@ export class EmailService implements EmailRepository {
                     </div>
                 </div>
             `,
-        };
-
-        await this.transporter.sendMail(mailOptions);
+            };
+            yield this.transporter.sendMail(mailOptions);
+        });
     }
-
-    async sendCourseRejectionEmail(email: string, courseName: string): Promise<void> {
-        const mailOptions = {
-            from: `"Edu-Nexus The E-learning Platform" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: 'Course Submission Update: Your course has not been approved',
-            text: `Dear Instructor,\n\nWe regret to inform you that your course "${courseName}" has not been approved. Please review our guidelines and resubmit after making the necessary changes.\n\nBest regards,\nThe Edu-Nexus Team`,
-            html: `
+    sendCourseRejectionEmail(email, courseName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailOptions = {
+                from: `"Edu-Nexus The E-learning Platform" <${process.env.EMAIL_USER}>`,
+                to: email,
+                subject: 'Course Submission Update: Your course has not been approved',
+                text: `Dear Instructor,\n\nWe regret to inform you that your course "${courseName}" has not been approved. Please review our guidelines and resubmit after making the necessary changes.\n\nBest regards,\nThe Edu-Nexus Team`,
+                html: `
                 <div style="font-family: Arial, sans-serif; color: #333;">
                     <div style="background-color: #f7f7f7; padding: 20px; border-radius: 10px;">
                         <h1 style="color: #f44336;">Course Not Approved</h1>
@@ -113,8 +128,9 @@ export class EmailService implements EmailRepository {
                     </div>
                 </div>
             `,
-        };
-
-        await this.transporter.sendMail(mailOptions);
+            };
+            yield this.transporter.sendMail(mailOptions);
+        });
     }
 }
+exports.EmailService = EmailService;

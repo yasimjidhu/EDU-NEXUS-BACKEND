@@ -8,8 +8,8 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const paymentRoute_1 = require("./presentation/routes/paymentRoute");
-const paymentDb_1 = require("./infrastructure/database/paymentDb");
+const axios_1 = __importDefault(require("axios"));
+const instructorApprovalConsumer_1 = require("./infrastructure/kafka/instructorApprovalConsumer");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cookie_parser_1.default)());
@@ -22,8 +22,11 @@ const corsOptions = {
     allowedHeaders: 'Content-Type,Authorization',
 };
 app.use((0, cors_1.default)(corsOptions));
-app.use('/payment', paymentRoute_1.router);
-(0, paymentDb_1.StartPaymentDb)();
-app.listen(3005, () => {
-    console.log('payment service running on port 3005 ');
+axios_1.default.defaults.withCredentials = true;
+(0, instructorApprovalConsumer_1.run)().then(() => {
+    app.listen(3003, () => {
+        console.log("notification service running on port 3003");
+    });
+}).catch((err) => {
+    console.log(err);
 });

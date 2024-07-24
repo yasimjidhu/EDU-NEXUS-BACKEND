@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cookieParser from 'cookie-parser'
 import axios from "axios";
-import { run } from "./infrastructure/kafka/kafkaConsumer";
+import { run } from "./infrastructure/kafka/instructorApprovalConsumer";
 
 dotenv.config();
 
@@ -23,7 +23,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 axios.defaults.withCredentials = true;
 
 run().then(()=>{
