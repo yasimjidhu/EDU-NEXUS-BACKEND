@@ -9,4 +9,6 @@ export interface UserRepository {
   findAllUsers():Promise<UserEntity[]>
   blockUser(email:string):Promise<UserEntity|null>
   unBlockUser(email:string):Promise<UserEntity|null>
+  getVerifiedInstructors():Promise<UserEntity[]>
+  getUnVerifiedInstructors():Promise<UserEntity[]>
 }

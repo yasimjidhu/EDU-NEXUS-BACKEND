@@ -43,7 +43,12 @@ export class RegisterUserUseCase {
     );
     user.profit = 0;
     user.isBlocked = false;
-    user.isVerified = false;
+    if (request.role === 'student') {
+      user.isVerified = true;
+    } else {
+      user.isVerified = false;
+    }
+    
     user.isGAuth = false;
     user.isRejected = false;
     

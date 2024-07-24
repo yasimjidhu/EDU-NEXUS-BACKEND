@@ -62,6 +62,34 @@ export class UserRepositoryImpl implements UserRepository {
       throw new Error(`Failed to find all instructors: ${error.message}`);
     }
   }
+  async getVerifiedInstructors(): Promise<UserEntity[]> {
+      try {
+        const verifiedInstructors = await User.find({
+          role: "instructor",
+          isVerified: true,
+          isRejected: false,
+        }).exec();
+        return verifiedInstructors.map(
+          (instructor) => instructor.toObject() as UserEntity
+        );
+      } catch (error: any) {
+        throw new Error(`Failed to find all instructors: ${error.message}`);
+      }
+    }
+    async getUnVerifiedInstructors(): Promise<UserEntity[]> {
+      try {
+        const unVerifiedInstructors = await User.find({
+          role: "instructor",
+          isVerified: false,
+          isRejected: false,
+        }).exec();
+        return unVerifiedInstructors.map(
+          (instructor) => instructor.toObject() as UserEntity
+        );
+      } catch (error: any) {
+        throw new Error(`Failed to find all instructors: ${error.message}`);
+      }
+    }
 
   async findAllUsers(): Promise<UserEntity[]> {
     try {

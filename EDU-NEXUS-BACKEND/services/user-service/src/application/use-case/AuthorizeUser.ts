@@ -1,4 +1,5 @@
 import { UserEntity } from "../../domain/entities/user";
+import { sendInstructorApprovalMessage } from "../../infrastructure/kafka/kafkaProducer";
 import { UserRepository } from "../../infrastructure/repositories/user";
 
 export class AuthorizeUserUseCase{
@@ -10,6 +11,8 @@ export class AuthorizeUserUseCase{
         if(!approvedUser){
             throw new Error('User not found or could not be approved')
         }
+
+        await sendInstructorApprovalMessage(email, "approve");
         
         return approvedUser
     }
@@ -19,6 +22,8 @@ export class AuthorizeUserUseCase{
         if(!rejectedUser){
             throw new Error('User not found or could not be rejected')
         }
+
+        await sendInstructorApprovalMessage(email, "reject");
         return rejectedUser
     }
 }

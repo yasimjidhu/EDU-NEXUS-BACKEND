@@ -3,7 +3,6 @@ import { RegisterUserUseCase } from "../../use-case/RegisterUser";
 import { AuthorizeUserUseCase } from "../../use-case/AuthorizeUser";
 import { ProfileUseCase } from "../../use-case/ProfileUseCase";
 import { AuthService } from "../../../adapters/services/verfiyAccessToken";
-import { sendApprovalMessage } from "../../../infrastructure/kafka/kafkaProducer";
 export class UserController {
   constructor(
     private registerUserUseCase: RegisterUserUseCase,
@@ -23,10 +22,8 @@ export class UserController {
         req.body,
         decoded.email
       );
-      console.log("registered user in usercontroller", user);
       res.status(201).json({ message: "User registered successfully", user });
     } catch (error: any) {
-      console.log("error in userrouter register", error);
       res.status(500).json({ error: error.message });
     }
   }
@@ -37,7 +34,7 @@ export class UserController {
       const decoded = this.authService.verifyAccessToken(access_token) as {
         email: string;
       };
-
+      
       const user = await this.profileUseCase.getUser(decoded.email);
       res
         .status(200)
@@ -55,7 +52,7 @@ export class UserController {
       const updatedUser = await this.authorizeUserUseCase.approveInstructor(
         email
       );
-      await sendApprovalMessage(email, "approve");
+      
       res
         .status(200)
         .json({
@@ -75,7 +72,6 @@ export class UserController {
       const updatedUser = await this.authorizeUserUseCase.approveInstructor(
         email
       );
-      await sendApprovalMessage(email, "reject");
       res
         .status(200)
         .json({
@@ -97,6 +93,24 @@ export class UserController {
       res.status(500).json({ message: error.message });
     }
   }
+  async getVerifiedInstructors(req: Request, res: Response): Promise<void> {
+    try {
+      const verifiedInstructors = await this.profileUseCase.getVerifiedInstructors();
+      res.status(200).json({ instructors: verifiedInstructors });
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async getUnVerifiedInstructors(req: Request, res: Response): Promise<void> {
+    try {
+      const unVerifiedInstructors = await this.profileUseCase.getUnVerifiedInstructors();
+      res.status(200).json({ instructors: unVerifiedInstructors });
+    } catch (error: any) {
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
   async getAllUsers(req:Request,res:Response):Promise<void>{
     try {
       const allUsers = await this.profileUseCase.getAllUsers();
@@ -109,7 +123,6 @@ export class UserController {
   
   async blockUser(req:Request,res:Response):Promise<void>{
     try {
-      console.log('block request reached in controller',req.body.email)
       const response = await this.profileUseCase.blockUser(req.body.email)
       res.status(200).json({email:response})
     } catch (error:any) {
@@ -118,7 +131,6 @@ export class UserController {
     }
   }
   async unBlockUser(req:Request,res:Response):Promise<void>{
-    console.log('unblock request reached in controller',req.body.email)
     try {
       const response = await this.profileUseCase.unBlockUser(req.body.email)
       res.status(200).json({email:response})

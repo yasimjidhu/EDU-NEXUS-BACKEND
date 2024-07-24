@@ -1,32 +1,30 @@
-import { Kafka } from "kafkajs";
+import { Kafka } from 'kafkajs';
 
 const kafka = new Kafka({
-    clientId: 'user-service',
-    brokers: ['localhost:9092']
+  clientId: 'user-service',
+  brokers: ['localhost:9092'],
 });
 
-const producer = kafka.producer();
+export const producer = kafka.producer();
 
-export const sendApprovalMessage = async (email: string, action: 'approve' | 'reject') => {
-    console.log(`Sending ${action} email to notification service:`, email);
-    try {
-        await producer.connect();
-
-        await producer.sendBatch({
-            topicMessages: [
-                {
-                    topic: 'instructor-approval',
-                    messages: [
-                        { value: JSON.stringify({ email, action }) }
-                    ]
-                }
-            ]
-        });
-
-        console.log(`${action} message sent successfully`, email);
-    } catch (error) {
-        console.error('Error sending message', error);
-    } finally {
-        await producer.disconnect();
-    }
+export const sendMessage = async (topic: string, message: object) => {
+  console.log(`Sending message to topic ${topic}:`, message);
+  try {
+    await producer.connect();
+    await producer.send({
+      topic,
+      messages: [{ value: JSON.stringify(message) }],
+    });
+    console.log(`Message sent successfully to topic ${topic}`);
+  } catch (error) {
+    console.error(`Error sending message to topic ${topic}`, error);
+  } finally {
+    await producer.disconnect();
+  }
 };
+
+export const sendCourseApprovalMessage = (email: string, courseName: string, action: string) =>
+  sendMessage('course-approval', { email, courseName, action });
+
+export const sendInstructorApprovalMessage = (email: string, action: 'approve' | 'reject') =>
+  sendMessage('instructor-approval', { email, action });

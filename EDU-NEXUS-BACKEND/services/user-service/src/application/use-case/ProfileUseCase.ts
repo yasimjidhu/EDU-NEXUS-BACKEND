@@ -1,5 +1,6 @@
 
 import { UserEntity } from "../../domain/entities/user";
+import { sendBlockUserMessage, sendUnblockUserMessage } from "../../infrastructure/kafka/kafkaService";
 import { UserRepository } from "../../infrastructure/repositories/user";
 
 
@@ -21,6 +22,20 @@ export class ProfileUseCase{
         }
         return allInstructors
     }
+    async getVerifiedInstructors():Promise<UserEntity[] | null>{
+        const verifiedInstructors = await this.userRepository.getVerifiedInstructors()
+        if(!verifiedInstructors){
+            return null
+        }
+        return verifiedInstructors
+    }
+    async getUnVerifiedInstructors():Promise<UserEntity[] | null>{
+        const unVerifiedInstructors = await this.userRepository.getUnVerifiedInstructors()
+        if(!unVerifiedInstructors){
+            return null
+        }
+        return unVerifiedInstructors
+    }
     async getAllUsers():Promise<UserEntity[] | null>{
         const allUsers = await this.userRepository.findAllUsers()
         if(!allUsers){
@@ -33,6 +48,7 @@ export class ProfileUseCase{
         if(!blockedUser){
             return null
         }
+        await sendBlockUserMessage(email)
         return blockedUser
     }
     async unBlockUser(email:string):Promise<UserEntity | null>{
@@ -40,6 +56,7 @@ export class ProfileUseCase{
         if(!unBlockedUser){
             return null
         }
+        await sendUnblockUserMessage(email)
         return unBlockedUser
     }
 }
