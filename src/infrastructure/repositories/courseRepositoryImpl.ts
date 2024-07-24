@@ -13,6 +13,7 @@ class CourseRepositoryImpl implements CourseRepository {
 
   async addCourse(course: CourseEntity): Promise<CourseEntity> {
     try {
+      console.log('got course data in backend',course)
       const newCourse = new Course({
         title: course.title,
         description: course.description,

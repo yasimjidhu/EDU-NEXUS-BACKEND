@@ -35,12 +35,7 @@ export class EnrollmentController {
         userId as string,
         courseId as string
       );
-      if (!studentEnrolled) {
-        res
-          .status(500)
-          .json({ message: "Error occurred while checking enrollment status" });
-        return;
-      }
+
       res.status(200).json({studentEnrolled});
     } catch (error: any) {
       console.log("error occured in enrollment verification", error);

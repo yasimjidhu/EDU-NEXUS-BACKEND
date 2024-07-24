@@ -59,18 +59,41 @@ export class CourseUseCase  {
     async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
         return await this.courseRepository.getCategoryWiseCourses(categoryId,page,limit);
     }
-    async approveCourse(data:TApproveCourse):Promise<CourseEntity>{
-        const updatedCourse = await this.courseRepository.approveCourse(data)
-        if(updatedCourse){
-            const approvalMailSent = await sendMessage({email:data.email,courseName:updatedCourse.title,action:'approve'})
+    async approveCourse(data: TApproveCourse): Promise<CourseEntity> {
+        try {
+          const updatedCourse = await this.courseRepository.approveCourse(data);
+          if (updatedCourse) {
+            console.log(`Approving course: ${updatedCourse.title}`);
+            await sendMessage({
+              email: data.email,
+              courseName: updatedCourse.title,
+              action: 'approve',
+            });
+            console.log('Approval email sent:', data.email);
+          }
+          return updatedCourse;
+        } catch (error) {
+          console.error('Error approving course:', error);
+          throw error;
         }
-        return updatedCourse
-    }
-    async rejectCourse(data:TApproveCourse):Promise<CourseEntity>{
-        const updatedCourse = await this.courseRepository.rejectCourse(data)
-        if(updatedCourse){
-            const approvalMailSent = await sendMessage({email:data.email,courseName:updatedCourse.title,action:'reject'})
+      }
+    
+      async rejectCourse(data: TApproveCourse): Promise<CourseEntity> {
+        try {
+          const updatedCourse = await this.courseRepository.rejectCourse(data);
+          if (updatedCourse) {
+            console.log(`Rejecting course: ${updatedCourse.title}`);
+            await sendMessage({
+              email: data.email,
+              courseName: updatedCourse.title,
+              action: 'reject',
+            });
+            console.log('Rejection email sent:', data.email);
+          }
+          return updatedCourse;
+        } catch (error) {
+          console.error('Error rejecting course:', error);
+          throw error;
         }
-        return updatedCourse
-    }
+      }
 }

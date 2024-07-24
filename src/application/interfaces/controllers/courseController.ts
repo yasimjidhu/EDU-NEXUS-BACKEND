@@ -72,10 +72,9 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
   async getAllCourses(req: Request, res: Response): Promise<void> {
     const page = parseInt(req.query.page as string)||1
-    const limit = 6
+    const limit = 8
 
     try {
       const courses = await this.courseUseCase.getAllCourses(page,limit);
@@ -85,7 +84,6 @@ export class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
   async getUnpublishedCourses(req: Request, res: Response): Promise<void> {
     try {
       const page = parseInt(req.query.page as string)||1
