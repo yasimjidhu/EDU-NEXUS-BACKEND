@@ -1,6 +1,7 @@
 import { Document, Types } from "mongoose";
 
-interface Lesson {
+export interface Lesson {
+    _id?:string;
     lessonNumber: string;
     title: string;
     description: string;
@@ -33,17 +34,18 @@ interface CourseEntity extends Document {
     instructorRef: Types.ObjectId;
     category: string;
     categoryRef: Types.ObjectId;
-    lessons: Lesson[];
-    pricing: Pricing;
+    lessons?: Lesson[];
+    pricing: Pricing;   
     level?: "beginner" | "intermediate" | "expert";
+    language?:string;
     certificationAvailable: boolean;
-    isRequested: boolean;
-    isBlocked: boolean;
-    isPublished: boolean;
-    isRejected: boolean;
+    enrolledStudentsCount?:number;
+    isRequested?: boolean;
+    isBlocked?: boolean;
+    isPublished?: boolean;
+    isRejected?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
-    language?: string;
     trial?: Trial;
 }
 

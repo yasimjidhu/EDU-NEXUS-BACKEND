@@ -4,6 +4,7 @@ export class CategoryEntity{
         public name:string,
         public description:string,
         public image:string,
-        public isBlocked?:boolean
+        public isBlocked?:boolean,
+        public coursesCount?:number
     ){}
 }

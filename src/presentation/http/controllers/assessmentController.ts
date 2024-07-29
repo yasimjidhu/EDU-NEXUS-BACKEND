@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AssessmentUseCase } from '../../usecases/assessmentUseCase';
+import { AssessmentUseCase } from '../../../application/usecases/assessmentUseCase';
 
 export class AssessmentController {
     

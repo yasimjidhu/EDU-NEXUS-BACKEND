@@ -1,9 +1,12 @@
 import CourseEntity from "../../domain/entities/course";
 import { EnrollmentEntity } from "../../domain/entities/enrollments";
 import { EnrollmentRepository } from "../../domain/repositories/enrollmentRepository";
+import { UserServiceClient } from "../../infrastructure/grpc/userClient";
 
 export class EnrollmentUseCase{
-    constructor(private readonly enrollmentRepository:EnrollmentRepository){}
+    constructor(private readonly enrollmentRepository:EnrollmentRepository,
+        private userServiceClient:UserServiceClient
+    ){}
 
     async enroll(enrollmentData: EnrollmentEntity): Promise<EnrollmentEntity | null> {
         try {
@@ -36,6 +39,8 @@ export class EnrollmentUseCase{
         return await this.enrollmentRepository.updateAssessmentCompletion(userId,courseId);
     };
     async getEnrolledInstructorsRefs(userId:string):Promise<any[]>{
-        return this.enrollmentRepository.enrolledInstructorRefs(userId)
+        const instructorIds =  await  this.enrollmentRepository.enrolledInstructorRefs(userId)
+        console.log('instructors id got and made the  grpc call',instructorIds)
+        return this.userServiceClient.getInstructors(instructorIds)
     }
 }

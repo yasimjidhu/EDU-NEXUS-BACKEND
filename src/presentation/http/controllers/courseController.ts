@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CourseUseCase } from "../../usecases/courseUseCase";
+import { CourseUseCase } from "../../../application/usecases/courseUseCase";
 
 export class CourseController {
   constructor(private courseUseCase: CourseUseCase) {}
@@ -19,14 +19,30 @@ export class CourseController {
     }
   }
   async updateCourse(req: Request, res: Response): Promise<void> {
-
+    const {courseId} = req.params
     try {
-      const course = await this.courseUseCase.updateCourse(req.body);
+
+      const course = await this.courseUseCase.updateCourse(courseId,req.body.course);
       if (!course) {
         res.status(500).json({ message: "Error occurred while updating the  course" });
         return;
       }
       res.status(200).json({ message: "course updated successfully", course });
+    } catch (error: any) {
+      console.log("error occured in update course", error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+  async updateLessons(req: Request, res: Response): Promise<void> {
+      const {courseId} = req.params
+    try {
+      
+      const updatedLessons = await this.courseUseCase.updateLessons(courseId,req.body.lessons);
+      if (!updatedLessons) {
+        res.status(500).json({ message: "Error occurred while updating the lessson" });
+        return;
+      }
+      res.status(200).json({ message: "lesson updated successfully", updatedLessons });
     } catch (error: any) {
       console.log("error occured in update course", error);
       res.status(500).json({ message: error.message });
@@ -74,10 +90,15 @@ export class CourseController {
   }
   async getAllCourses(req: Request, res: Response): Promise<void> {
     const page = parseInt(req.query.page as string)||1
-    const limit = 8
+    const limit = 6
+    const sort = req.query.sort as string | undefined
+    const filters = {
+      price:req.query.price as string | undefined,
+      level:req.query.level as string | undefined
+    }
 
     try {
-      const courses = await this.courseUseCase.getAllCourses(page,limit);
+      const courses = await this.courseUseCase.getAllCourses(page,limit,sort,filters);
       res.status(200).json({ message: "courses retrieved successfully", courses });
     } catch (error: any) {
       console.log("error occured in retrieve courses", error);
@@ -99,13 +120,22 @@ export class CourseController {
   async getCategoryWiseCourses(req: Request, res: Response): Promise<void> {
     const { categoryId } = req.params
     const page = parseInt(req.query.page as string) || 1;
-    const limit = 8;
+    const limit = 6;
+
+    const sort = req.query.sort as string | undefined
+    const filters = {
+      price:req.query.price as string | undefined,
+      level:req.query.level as string | undefined
+    }
+
   
     try {
       const { allCourses, totalCourses } = await this.courseUseCase.getCategoryWiseCourses(
         categoryId as string,
         page,
-        limit
+        limit,
+        sort,
+        filters
       );
       res.status(200).json({ message: "Courses retrieved successfully", allCourses, totalCourses });
     } catch (error: any) {

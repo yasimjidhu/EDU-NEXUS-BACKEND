@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from './infrastructure/database/course-db';
-import router from './application/interfaces/routes/index';
+import router from './presentation/http/routes/index';
 import { startEnrollmentConsumer } from './infrastructure/kafka/consumer';
 import { EnrollmentRepositoryImpl } from './infrastructure/repositories/enrollmentRepositoryImpl';
 
@@ -27,10 +27,8 @@ app.use(cors(corsOptions));
 app.use('/course', router);
 
 connectDB().then(() => {
-  // Initialize the EnrollmentRepository
   const enrollmentRepository = new EnrollmentRepositoryImpl();
   startEnrollmentConsumer(enrollmentRepository);
-  console.log('enrollment consumer started')
 }).then(() => {
   app.listen(3004, () => {
     console.log('content-mgt service running on port 3004');

@@ -1,6 +1,6 @@
 
 import { Request, Response } from "express";
-import { CategoryUseCase } from "../../usecases/categoryUseCase";
+import { CategoryUseCase } from "../../../application/usecases/categoryUseCase";
 
 export class CategoryController {
     constructor(private categoryUseCase: CategoryUseCase) {}
@@ -36,8 +36,9 @@ export class CategoryController {
         }
     }
     async updateCategory(req: Request, res: Response): Promise<void> {
+        const {categoryId} = req.params
         try {
-            const updatedCategory = await this.categoryUseCase.updateCategory(req.body);
+            const updatedCategory = await this.categoryUseCase.updateCategory(categoryId,req.body);
             res.status(200).json({ message: 'Category updated successfully', updatedCategory });
         } catch (error: any) {
             res.status(500).json({ message: error.message });

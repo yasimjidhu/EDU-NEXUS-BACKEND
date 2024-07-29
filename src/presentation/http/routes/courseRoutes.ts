@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { CourseController } from "../controllers/courseController";
-import { CourseUseCase } from "../../usecases/courseUseCase";
+import { CourseUseCase } from "../../../application/usecases/courseUseCase";
 import CourseRepositoryImpl from "../../../infrastructure/repositories/courseRepositoryImpl";
-import authMiddleware, { instructorMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
+import authMiddleware, { instructorMiddleware } from "../middlewares/authentcationMiddleware";
 
 
 const router = Router();
@@ -25,6 +25,7 @@ router.get('/courseRequests',courseController.getUnpublishedCourses.bind(courseC
 router.get('/categorywise/:categoryId', courseController.getCategoryWiseCourses.bind(courseController));
 router.get('/get-courses/:instructorId', courseController.getAllCoursesOfInstructor.bind(courseController));
 router.post('/add-course',authMiddleware,instructorMiddleware, courseController.addCourse.bind(courseController));
-router.put('/update-course',authMiddleware,instructorMiddleware, courseController.updateCourse.bind(courseController));
+router.put('/update-course/:courseId',authMiddleware,instructorMiddleware, courseController.updateCourse.bind(courseController));
+router.put('/update-lessons/:courseId',authMiddleware,instructorMiddleware, courseController.updateLessons.bind(courseController));
 
 export default router;

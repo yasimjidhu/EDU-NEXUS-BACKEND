@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ReviewUseCase } from "../../usecases/reviewUseCase";
+import { ReviewUseCase } from '../../../application/usecases/reviewUseCase';
 
 export class ReviewController{
     constructor(private reviewUseCase: ReviewUseCase) {}

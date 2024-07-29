@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { AssessmentController } from "../controllers/assessmentController";
-import { AssessmentUseCase } from "../../usecases/assessmentUseCase";
+import { AssessmentUseCase } from "../../../application/usecases/assessmentUseCase";
 import { AssessmentRepositoryImpl } from "../../../infrastructure/repositories/assessmentRepositoryImpl";
-import authMiddleware, { instructorMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
+import authMiddleware, { instructorMiddleware } from "../middlewares/authentcationMiddleware";
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { EnrollmentUseCase } from "../../usecases/enrollmentUseCase";
+import { EnrollmentUseCase } from "../../../application/usecases/enrollmentUseCase";
 
 export class EnrollmentController {
   constructor(private enrollmentUseCase: EnrollmentUseCase) {}
@@ -78,8 +78,9 @@ export class EnrollmentController {
     try{
       const {userId} = req.params
 
-      const instructorRefs = await this.enrollmentUseCase.getEnrolledInstructorsRefs(userId)  
-      res.status(200).json({ message: "successfully retrieved the instructors reference ", instructorRefs:instructorRefs });
+      const instructors = await this.enrollmentUseCase.getEnrolledInstructorsRefs(userId)  
+      console.log('instructors got in controller',instructors)
+      res.status(200).json({ message: "successfully retrieved the instructors details ", instructors:instructors });
     }catch(error:any){
       console.log(error);
       res.status(500).json({ message: error.message });

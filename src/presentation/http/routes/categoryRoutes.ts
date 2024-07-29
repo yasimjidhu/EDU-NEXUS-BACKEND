@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { CategoryController } from "../controllers/CategoryController";
-import { CategoryUseCase } from "../../usecases/categoryUseCase";
+import { CategoryUseCase } from "../../../application/usecases/categoryUseCase";
 import { categoryRepositoryImpl } from "../../../infrastructure/repositories/categoryRepositoryImpl";
-import authMiddleware, { adminMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
+import authMiddleware, { adminMiddleware } from "../middlewares/authentcationMiddleware";
 
 const router = Router();
 
@@ -17,7 +17,7 @@ const categoryController = new CategoryController(categoryUseCase);
 
 // Routes
 router.post('/', authMiddleware,adminMiddleware,categoryController.handleAddCategory.bind(categoryController));
-router.put('/', authMiddleware,adminMiddleware, categoryController.updateCategory.bind(categoryController));
+router.put('/:categoryId', authMiddleware,adminMiddleware, categoryController.updateCategory.bind(categoryController));
 router.post('/block/:categoryId', authMiddleware,adminMiddleware, categoryController.blockCategory.bind(categoryController));
 router.get('/', categoryController.getAllCategories.bind(categoryController));
 

@@ -1,6 +1,6 @@
 // domain/usecases/createCourse.ts
 
-import CourseEntity from "../../domain/entities/course";
+import CourseEntity, { Lesson } from "../../domain/entities/course";
 import { sendMessage } from "../../infrastructure/kafka/service";
 import CourseRepositoryImpl from "../../infrastructure/repositories/courseRepositoryImpl";
 import { PaginatedCourse,TApproveCourse } from "../../types/course";
@@ -16,13 +16,11 @@ export class CourseUseCase  {
             throw new Error(`Failed to create course: ${error.message}`);
         }
     }
-    async updateCourse(course: CourseEntity): Promise<CourseEntity> {
-        try {
-            const updatedCourse = await this.courseRepository.updateCourse(course);
-            return updatedCourse;
-        } catch (error:any) {
-            throw new Error(`Failed to update course: ${error.message}`);
-        }
+    async updateCourse(courseId:string,course: CourseEntity): Promise<CourseEntity> {
+        return await this.courseRepository.updateCourse(courseId,course);
+    }
+    async updateLessons(courseId:string,lessons:Lesson[]):Promise<CourseEntity>{
+        return await this.courseRepository.updateLessons(courseId,lessons)
     }
     async getAllCoursesOfInstructor(instructorId:string): Promise<CourseEntity[]> {
         try {
@@ -40,13 +38,8 @@ export class CourseUseCase  {
             throw new Error(`Failed to retrieve course: ${error.message}`);
         }
     }
-    async getAllCourses(page:number,limit:number): Promise<PaginatedCourse> {
-        try {
-            const allCourses = await this.courseRepository.getAllCourses(page,limit);
-            return allCourses;
-        } catch (error:any) {
-            throw new Error(`Failed to retrieve courses: ${error.message}`);
-        }
+    async getAllCourses(page: number, limit: number, sort?: string, filters?: any): Promise<PaginatedCourse> {
+          return await this.courseRepository.getAllCourses(page,limit,sort,filters);
     }
     async getUnpublishedCourses(page:number,limit:number): Promise<PaginatedCourse> {
         try {
@@ -56,8 +49,8 @@ export class CourseUseCase  {
             throw new Error(`Failed to retrieve unpublished courses: ${error.message}`);
         }
     }
-    async getCategoryWiseCourses(categoryId: string,page:number,limit:number): Promise<PaginatedCourse> {
-        return await this.courseRepository.getCategoryWiseCourses(categoryId,page,limit);
+    async getCategoryWiseCourses(categoryId: string,page:number,limit:number,sort?:any,filters?:any): Promise<PaginatedCourse> {
+        return await this.courseRepository.getCategoryWiseCourses(categoryId,page,limit,sort,filters);
     }
     async approveCourse(data: TApproveCourse): Promise<CourseEntity> {
         try {

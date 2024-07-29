@@ -1,16 +1,21 @@
 import { Router } from "express";
 import { EnrollmentController } from "../controllers/EnrollmentController";
-import { EnrollmentUseCase } from "../../usecases/enrollmentUseCase";
+import { EnrollmentUseCase } from "../../../application/usecases/enrollmentUseCase";
 import { EnrollmentRepositoryImpl } from "../../../infrastructure/repositories/enrollmentRepositoryImpl";
-import authMiddleware, { studentMiddleware } from "../../../infrastructure/middlewares/authentcationMiddleware";
+import { UserServiceClient } from "../../../infrastructure/grpc/userClient";
+import authMiddleware, { studentMiddleware } from "../middlewares/authentcationMiddleware";
 
 const router = Router();
+
+
+//grpc client
+const userServiceClient = new UserServiceClient('localhost:50051')
 
 // Repository
 const enrollmentRepository = new EnrollmentRepositoryImpl();
 
 // Use Case
-const enrollmentUseCase = new EnrollmentUseCase(enrollmentRepository);
+const enrollmentUseCase = new EnrollmentUseCase(enrollmentRepository,userServiceClient);
 
 // Controller
 const enrollmentController = new EnrollmentController(enrollmentUseCase);

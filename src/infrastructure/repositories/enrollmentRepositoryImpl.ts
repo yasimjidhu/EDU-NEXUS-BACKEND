@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 export class EnrollmentRepositoryImpl implements EnrollmentRepository {
   async enroll(data: EnrollmentEntity): Promise<EnrollmentEntity | null> {
     try {
+      console.log('data for enrollment',data)
       const enrollment = new Enrollment(data);
       const savedEnrollment = await enrollment.save();
       return savedEnrollment.toObject() as EnrollmentEntity;
@@ -95,7 +96,6 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
     }
     // Save the updated enrollment document
     await enrollment.save();
-    console.log('updated enrollment',enrollment)
     // Return the updated enrollment as EnrollmentEntity
     return enrollment.toObject() as EnrollmentEntity;
   }
@@ -135,13 +135,7 @@ export class EnrollmentRepositoryImpl implements EnrollmentRepository {
           _id: null,
           instructorRefs: { $addToSet: '$course.instructorRef' }
         }
-      },
-      {
-        $project: {
-          _id: 0,
-          instructorRefs: 1
-        }
-      }
+      },  
     ]);
     console.log('enrolled instructors',enrolledInstructors)
     return enrolledInstructors[0]?.instructorRefs || [];
