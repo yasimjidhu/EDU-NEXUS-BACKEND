@@ -1,0 +1,9 @@
+node_modules
+.env
+.vscode
+.history
+*.log
+
+!/services/payment-service
+.vscode/
+.history/
