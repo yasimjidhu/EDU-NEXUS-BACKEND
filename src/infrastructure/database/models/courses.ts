@@ -1,16 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import CourseEntity from "../../../domain/entities/course";
 
-
-const attachmentSchema = new Schema({
-    title:{
-        type:String,
-    },
-    url:{
-        type:String
-    }
-})
-
 const lessonSchema = new Schema({
     lessonNumber: {
         type: String,
@@ -31,9 +21,12 @@ const lessonSchema = new Schema({
     duration: {
         type: String,
     },
-    attachments:[attachmentSchema]
-});
+    attachments: {
+        title: String,
+        url: String
+    },
 
+});
 
 const trialSchema = new Schema({
     video: {
@@ -64,7 +57,7 @@ const courseSchema = new Schema({
     },
     language: {
         type: String,
-        default: "English"
+        default: "english"
     },
     certificationAvailable:{
         type:Boolean,
