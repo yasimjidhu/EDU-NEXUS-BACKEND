@@ -5,6 +5,17 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
+    "baseUrl": ".",
+    "paths": {
+        "@entities/*":["src/domain/entities/*"],
+        "@repositories/*":["src/infrastructure/repositories/*"],
+        "@routes/*":["src/presentation/routes/*"],
+        "@controllers/*":["src/presentation/controllers/*"],
+        "@middlewares/*":["src/presentation/middleware/*"],
+        "@usecases/*":["src/application/useCases/*"],
+        "@interfaces/*":["src/application/interfaces/*"],
+        "@database/*":["src/infrastructure/database/*"]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true
   },

@@ -1,4 +1,4 @@
-import { Message } from '../entities/message';
+import { Message } from '../../domain/entities/message';
 
 export interface IChatService {
   sendMessage(message: Message): Promise<Message>;

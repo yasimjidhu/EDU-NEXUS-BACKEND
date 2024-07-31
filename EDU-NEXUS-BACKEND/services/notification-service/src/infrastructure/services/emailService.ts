@@ -13,7 +13,7 @@ export class EmailService implements EmailRepository {
         },
     });
 
-    async sendApprovalEmail(email: string,course): Promise<void> {
+    async sendApprovalEmail(email: string): Promise<void> {
         const mailOptions = {
             from: '"Edu-Nexus The E-learning Platform" <' + process.env.EMAIL_USER + '>',
             to: email,

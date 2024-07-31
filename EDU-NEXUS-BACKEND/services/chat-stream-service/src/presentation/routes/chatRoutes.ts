@@ -12,9 +12,6 @@ const chatUseCase = new ChatUseCase(chatService);
 const chatController = new ChatController(chatUseCase);
 
 router.post('/message', chatController.sendMessage.bind(chatController));
-router.get(
-  '/messages/:conversationId',
-  chatController.getMessages.bind(chatController),
-);
+router.get('/messages/:conversationId',chatController.getMessages.bind(chatController));
 
 export default router;

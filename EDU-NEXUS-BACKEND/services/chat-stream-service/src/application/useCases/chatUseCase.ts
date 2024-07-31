@@ -1,4 +1,4 @@
-import { IChatService } from '../../domain/interfaces/IChatService';
+import { IChatService } from '../interfaces/IChatService';
 import { Message } from '../../domain/entities/message';
 
 export class ChatUseCase {

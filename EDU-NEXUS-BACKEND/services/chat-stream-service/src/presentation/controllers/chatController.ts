@@ -6,6 +6,7 @@ export class ChatController {
 
   async sendMessage(req: Request, res: Response): Promise<void> {
     try {
+      console.log('message got in backend',req.body)
       const message = req.body;
       const savedMessage = await this.chatUseCase.sendMessage(message);
       res.status(200).json(savedMessage);

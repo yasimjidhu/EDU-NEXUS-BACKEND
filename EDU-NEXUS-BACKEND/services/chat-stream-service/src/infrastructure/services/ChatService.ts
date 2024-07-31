@@ -1,5 +1,5 @@
 import { Message } from '../../domain/entities/message';
-import { IChatService } from '../../domain/interfaces/IChatService';
+import { IChatService } from '../../application/interfaces/IChatService';
 import { ChatRepository } from '../repositories/ChatRepository';
 
 export class ChatService implements IChatService {
