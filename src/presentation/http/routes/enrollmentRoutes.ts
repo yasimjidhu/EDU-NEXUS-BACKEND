@@ -9,7 +9,7 @@ const router = Router();
 
 
 //grpc client
-const userServiceClient = new UserServiceClient('localhost:50051')
+const userServiceClient = new UserServiceClient('localhost:50052')
 
 // Repository
 const enrollmentRepository = new EnrollmentRepositoryImpl();

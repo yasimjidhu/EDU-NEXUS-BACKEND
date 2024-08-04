@@ -3,14 +3,15 @@ syntax = "proto3";
 package userservice;
 
 service UserService {
-  rpc GetInstructorsByIds (GetInstructorsByIdsRequest) returns (GetInstructorsByIdsResponse) {}
+  rpc GetInstructorsByIds (GetUserByIdsRequest) returns (GetUserByIdsResponse) {};
+  rpc GetStudentsByIds (GetUserByIdsRequest) returns (GetUserByIdsResponse){};
 }
 
-message GetInstructorsByIdsRequest {
-  repeated string instructor_ids = 1;
+message GetUserByIdsRequest {
+  repeated string user_ids = 1;
 }
 
-message Instructor {
+message User {
   string _id = 1;
   string firstName = 2;
   string lastName = 3;
@@ -23,7 +24,7 @@ message Instructor {
 }
 
 message Profile {
-  string avatar = 1;    
+  string avatar = 1;
   string dateOfBirth = 2;
   string gender = 3;
 }
@@ -34,6 +35,6 @@ message Contact {
   string social = 3;
 }
 
-message GetInstructorsByIdsResponse {
-  repeated Instructor instructors = 1;
+message GetUserByIdsResponse {
+  repeated User users = 1;
 }

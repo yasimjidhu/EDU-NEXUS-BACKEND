@@ -28,12 +28,11 @@ export class UserServiceClient {
     // Fetch instructors by IDs
     getInstructors(instructorIds: string[]): Promise<Instructor[]> {
         return new Promise((resolve, reject) => {
-            this.client.GetInstructorsByIds({ instructor_ids: instructorIds }, (error: any, response: any) => {
+            this.client.GetInstructorsByIds({ user_ids: instructorIds }, (error: any, response: any) => {
                 if (error) {
                     reject(error);
                 } else {
-                    console.log('respone from user service of grpc call',response.instructors)
-                    resolve(response.instructors);
+                    resolve(response.users);
                 }
             });
         });

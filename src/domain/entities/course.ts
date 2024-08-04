@@ -1,6 +1,7 @@
 import { Document, Types } from "mongoose";
 
-interface Lesson {
+export interface Lesson {
+    _id?:number:string;
     lessonNumber: string;
     title: string;
     description: string;
