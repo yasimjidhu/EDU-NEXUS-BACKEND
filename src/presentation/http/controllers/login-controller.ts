@@ -25,6 +25,7 @@ export class LoginController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
+      console.log('login reached backend',req.body)
       const { email, password } = req.body;
       const result = await this.loginUseCase.execute(email, password);
   

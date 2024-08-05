@@ -16,7 +16,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     if (!token) {
         return res.status(403).json({ message: "No token provided" });
-    }
+    }z
 
     try {
         const decoded: any = jwt.verify(token, jwt_access_secret);
