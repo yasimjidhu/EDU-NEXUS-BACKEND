@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application ,Request} from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import proxy from 'express-http-proxy';
@@ -18,24 +18,30 @@ app.use(express.json());
 
 axios.defaults.withCredentials = true;
 
-// Define proxies
+// proxies
+
 const authProxy = proxy('http://localhost:3001', {
-  proxyReqPathResolver: (req) => `/auth${req.url}`,
+  proxyReqPathResolver: (req:Request) => `/auth${req.url}`,
 });
+
 const userProxy = proxy('http://localhost:3002', {
-  proxyReqPathResolver: (req) => `/user${req.url}`,
+  proxyReqPathResolver: (req:Request) => `/user${req.url}`,
 });
+
 const notificationProxy = proxy('http://localhost:3003', {
-  proxyReqPathResolver: (req) => `/notification${req.url}`,
+  proxyReqPathResolver: (req:Request) => `/notification${req.url}`,
 });
+
 const courseProxy = proxy('http://localhost:3004', {
-  proxyReqPathResolver: (req) => `/course${req.url}`,
+  proxyReqPathResolver: (req:Request) => `/course${req.url}`,
 });
+
 const paymentProxy = proxy('http://localhost:3005', {
-  proxyReqPathResolver: (req) => `/payment${req.url}`,
+  proxyReqPathResolver: (req:Request) => `${req.url}`,
 });
+  
 const chatProxy = proxy('http://localhost:3006', {
-  proxyReqPathResolver: (req) => `/chat${req.url}`,
+  proxyReqPathResolver: (req:Request) => `/chat${req.url}`,
 });
 
 
