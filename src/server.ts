@@ -1,13 +1,13 @@
-import express, { Application ,Request} from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import proxy from 'express-http-proxy';
-import axios from 'axios';
 
 const app: Application = express();
 
+// CORS options
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: 'https://edu-nexus-frontend-kappa.vercel.app',
   credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
@@ -16,45 +16,37 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
-axios.defaults.withCredentials = true;
-
-// proxies
-
-const authProxy = proxy('http://localhost:3001', {
-  proxyReqPathResolver: (req:Request) => `/auth${req.url}`,
+// Logging middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`Request Method: ${req.method} | Request URL: ${req.originalUrl}`);
+  next();
 });
 
-const userProxy = proxy('http://localhost:3002', {
-  proxyReqPathResolver: (req:Request) => `/user${req.url}`,
-});
+// Proxy options with error handling
+const proxyWithErrorHandling = (target: string) =>
+  proxy(target, {
+    proxyReqOptDecorator: (proxyReqOpts:any) => {
+      proxyReqOpts.headers['x-forwarded-host'] = proxyReqOpts.headers.host;
+      proxyReqOpts.headers['x-forwarded-proto'] = 'https';
+      return proxyReqOpts;
+    },
+    proxyErrorHandler: (err, res, next) => {
+      console.error(`Error proxying to ${target}:`, err.message);
+      res.status(500).json({ message: `Error communicating with ${target}` });
+    },
+  });
 
-const notificationProxy = proxy('http://localhost:3003', {
-  proxyReqPathResolver: (req:Request) => `/notification${req.url}`,
-});
+// Define service proxies
+app.use('/auth', proxyWithErrorHandling('https://auth-service-new.onrender.com'));
+app.use('/user', proxyWithErrorHandling('https://user-service-new.onrender.com'));
+app.use('/course', proxyWithErrorHandling('https://content-service-new.onrender.com'));
+app.use('/payment', proxyWithErrorHandling('https://payment-service-new-16xi.onrender.com'));
+app.use('/chat', proxyWithErrorHandling('https://chat-service-hcpy.onrender.com'));
+app.use('/notification', proxyWithErrorHandling('https://notification-service-new.onrender.com'));
 
-const courseProxy = proxy('http://localhost:3004', {
-  proxyReqPathResolver: (req:Request) => `/course${req.url}`,
-});
-
-const paymentProxy = proxy('http://localhost:3005', {
-  proxyReqPathResolver: (req:Request) => `${req.url}`,
-});
-  
-const chatProxy = proxy('http://localhost:3006', {
-  proxyReqPathResolver: (req:Request) => `/chat${req.url}`,
-});
-
-
-// Proxy middleware
-app.use('/auth', authProxy);
-app.use('/user', userProxy);
-app.use('/course', courseProxy);
-app.use('/payment', paymentProxy);
-app.use('/chat', chatProxy);
-app.use('/notification', notificationProxy);
-
-const PORT = 4000;
+// Start the server
+const PORT = process.env.PORT || 4002;
 
 app.listen(PORT, () => {
-  console.log(`API gateway running on port ${PORT}`);
+  console.log(`API Gateway running on port ${PORT}`);
 });
